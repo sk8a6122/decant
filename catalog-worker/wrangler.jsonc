@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "decant-wine-search",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-01",
+  "vars": { "ALLOWED_ORIGINS": "https://sk8a6122.github.io" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "decant-wines",
+      "database_id": "21caba72-8ff8-4405-abc7-0d0a89090069"
+    }
+  ]
+}

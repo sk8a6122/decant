@@ -1,0 +1,15 @@
+import {initialContent,plans} from '../lib/content';
+const key='decant-portable-notebook-v1';
+function load(){const raw=localStorage.getItem(key);return raw?JSON.parse(raw):{name:'',records:[],progress:[],content:initialContent};}
+function save(s:any){try{localStorage.setItem(key,JSON.stringify(s))}catch{throw new Error('This browser could not save your notebook. Enable browser storage or export your notes before closing.')}}
+export async function portableRequest(path:string,body?:any,method='POST'){
+const s=load();
+if(path==='bootstrap')return {member:{id:'local-notebook',email:'Stored only in this browser',name:s.name,admin:true,tier:3,status:'local'},records:s.records,progress:s.progress,content:s.content.map((c:any)=>({...c,locked:false,lessonCount:c.body.length})),plans,billingReady:false,launch:null};
+if(path==='records'&&method==='DELETE'){s.records=s.records.filter((r:any)=>r.id!==body.id);save(s);return {deleted:true}}
+if(path==='records'){if(!String(body.data?.name||'').trim())throw new Error('Please enter a name.');if(body.kind==='bottle'&&(!Number.isFinite(Number(body.data.qty))||Number(body.data.qty)<0))throw new Error('Enter a valid bottle quantity.');const id=body.id||crypto.randomUUID();const data={...body.data};if(body.kind==='note')data.rating=Number(data.rating);s.records=s.records.filter((r:any)=>r.id!==id);s.records.unshift({id,kind:body.kind,data});save(s);return {saved:true,id}}
+if(path==='profile'){s.name=String(body.name||'').slice(0,100);save(s);return {saved:true}}
+if(path==='content'){if(!body.title?.trim()||!body.summary?.trim()||!body.body?.length||body.body.some((l:any)=>!l.title?.trim()||!l.body?.trim()))throw new Error('Add a title, summary and lesson text.');const id=body.id||crypto.randomUUID();s.content=s.content.filter((c:any)=>c.id!==id);s.content.push({...body,id});save(s);return {saved:true,id}}
+if(path==='progress'){const c=s.content.find((c:any)=>c.id===body.contentId);const lesson=c?.body?.[body.lesson];if(!lesson)throw new Error('Lesson not found.');if(lesson.question&&lesson.answer!==body.answer)throw new Error('Not quite. Revisit the lesson and try again.');if(!s.progress.some((p:any)=>p.content_id===body.contentId&&p.lesson===body.lesson))s.progress.push({content_id:body.contentId,lesson:body.lesson});save(s);return {saved:true}}
+if(path==='import'){if(!Array.isArray(body.bottles)||!Array.isArray(body.notes))throw new Error('Choose a Decant notebook JSON export.');for(const [kind,list] of [['bottle',body.bottles],['note',body.notes],['host',body.gatherings||[]]] as any){for(const r of list){const id='import-'+kind+'-'+(r.id||JSON.stringify(r));if(!s.records.some((x:any)=>x.id===id))s.records.push({id,kind,data:{...r,tags:Array.isArray(r.tags)?r.tags.join(', '):r.tags}})}}if(Array.isArray(body.education))s.content=body.education;if(Array.isArray(body.progress))s.progress=body.progress;save(s);return {saved:true}}
+throw new Error('Member accounts and payments require the full backend application. This HTML edition saves only in your browser.');
+}

@@ -1,0 +1,9 @@
+__pycache__/
+node_modules/
+.wrangler/
+.env*
+.dev.vars*
+catalog-worker/data/
+*.sqlite
+*.sqlite3
+dist/

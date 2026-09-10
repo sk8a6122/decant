@@ -1,0 +1,16 @@
+{
+  "name": "decant-wine-search",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "test": "node --experimental-sqlite test/search.test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.92.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}
