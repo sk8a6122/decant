@@ -8,6 +8,8 @@ Search, selection, vintage prefill and saving have been tested against 185,351 l
 
 The notebook still uses browser-local storage. This change does not add member accounts, cloud notebook sync, payments, or drinking-window estimates.
 
+The Pairings page accepts food and dish searches, suggests three useful wine starting points, and ranks matching bottles already saved in the local cellar. Food queries and cellar contents remain in the browser.
+
 ## Build
 
 Use Node 24 or newer. In `frontend`, install dependencies with `pnpm install`, then run `pnpm build`. This regenerates the root `index.html`. The complete source and existing UI styles are included.
