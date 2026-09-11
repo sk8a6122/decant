@@ -12,7 +12,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "allowImportingTsExtensions": true
   },
   "include": [
     "app/client.tsx",

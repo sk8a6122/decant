@@ -1,0 +1,23 @@
+'use client';
+import React,{useState} from 'react';
+import {drillFor,structureClue,REVEAL_CEILINGS} from '../lib/deduction-drill';
+import type {WineReference} from '../lib/academy-engine';
+import type {Attempt} from '../lib/academy-state';
+export default function DailyDrill({reference,onBack,onSave,renderResult}:{reference:WineReference;onBack:()=>void;onSave:(body:any)=>Promise<Attempt>;renderResult:(a:Attempt)=>React.ReactNode}){
+ const drill=drillFor(reference);
+ const [round,setRound]=useState<1|2|3>(1),[world,setWorld]=useState(''),[climate,setClimate]=useState(''),[committed,setCommitted]=useState(false),[choice,setChoice]=useState(''),[locked,setLocked]=useState(false),[fruitHypothesis,setFruitHypothesis]=useState(''),[discriminator,setDiscriminator]=useState<number|null>(null),[result,setResult]=useState<Attempt|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[started]=useState(Date.now());
+ const choices=(title:string,options:string[],value:string,change:(v:string)=>void,disabled=false)=><fieldset className="knowledge-check"><legend>{title}</legend>{options.map(o=><label key={o}><input type="radio" name={title} checked={value===o} disabled={disabled} onChange={()=>change(o)}/>{o}</label>)}</fieldset>;
+ return <section className="academy-exercise daily-drill"><button className="text-button" onClick={onBack}>← All practice</button><div className="exercise-heading"><div><p className="eyebrow">DAILY DEDUCTION · ABOUT FIVE MINUTES</p><h2>Build the case, clue by clue.</h2></div><strong className="reveal-score" aria-live="polite">{REVEAL_CEILINGS[round]}<small> points available</small></strong></div><p>Structure first. Commit your hypothesis, then decide whether another clue is worth its cost. Your final call earns up to 75 points; the discriminator earns 25.</p><ol className="reveal-ladder" aria-label="Clue costs">{(['Structure · 100','Fruit · 80','Non-fruit · 60']).map((r,i)=><li key={r} aria-current={round===i+1?'step':undefined} className={round>=i+1?'revealed':''}>{r}</li>)}</ol>
+ <section className="case-clue"><h3>1 · Structure</h3><p>{structureClue(reference)}</p></section>
+ {round>=2&&<section className="case-clue"><h3>2 · Fruit character</h3><p>{drill.fruit.join(', ')}.</p></section>}
+ {round>=3&&<section className="case-clue"><h3>3 · Non-fruit aromas</h3><p>{drill.nonFruit.join(', ')}.</p></section>}
+ {error&&<p role="alert" className="banner error">{error}</p>}
+ {result?<>{renderResult(result)}<p className="small">This was a hypothetical benchmark. It practises reasoning from supplied observations and does not contribute to palate calibration.</p><button className="primary" onClick={onBack}>Choose another case</button></>:<>
+ <div className="hypothesis-grid">{choices('Initial origin hypothesis',['Old World','New World','Uncertain'],world,setWorld,committed)}{choices('Initial climate hypothesis',['Cool / moderate','Warm','Uncertain'],climate,setClimate,committed)}</div>
+ {!committed?<><p className="small">A hypothesis, not proof. These choices are saved for reflection and do not earn correctness points.</p><button className="primary" disabled={!world||!climate} onClick={()=>setCommitted(true)}>Commit my hypothesis</button></>:<>
+ {choices('Which candidate fits best?',drill.candidates,choice,setChoice,locked)}
+ {!locked?<div className="drill-actions"><button className="primary" disabled={!choice} onClick={()=>setLocked(true)}>Lock my call · up to {REVEAL_CEILINGS[round]} points</button>{round<3&&<button className="outline-button" disabled={round===2&&!choice} onClick={()=>{if(round===2)setFruitHypothesis(choice);setRound(round===1?2:3);setChoice('')}}>Reveal {round===1?'fruit':'non-fruit'} · ceiling {round===1?80:60}</button>}{round===2&&!choice&&<p className="small">Choose a provisional candidate before buying the final clue.</p>}</div>:<form onSubmit={async e=>{e.preventDefault();setBusy(true);setError('');try{setResult(await onSave({id:crypto.randomUUID(),kind:'drill',contentId:reference.id,answers:{round,world,climate,choice,fruitHypothesis,discriminator},elapsedSeconds:Math.floor((Date.now()-started)/1000)}))}catch(e:any){setError(e.message)}finally{setBusy(false)}}}><p className="small">Call locked: {choice}. Now explain the comparison.</p><fieldset className="knowledge-check"><legend>{drill.discriminator.question}</legend>{drill.discriminator.options.map((o,i)=><label key={o}><input type="radio" name="discriminator" checked={discriminator===i} onChange={()=>setDiscriminator(i)}/>{o}</label>)}</fieldset><button className="primary" disabled={busy||discriminator===null}>{busy?'Saving…':'Score my decisions'}</button></form>}
+ </>}
+ </>}
+ </section>
+}

@@ -205,3 +205,5 @@ footer { border-color: #d9b9c1; color: #86465a; }
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(forced-colors:active){.structure-field input,.stock-change input{forced-color-adjust:auto}.wine-results [aria-selected=true]{outline:2px solid Highlight}}
+
+@import './academy.css';

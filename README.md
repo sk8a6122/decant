@@ -50,4 +50,15 @@ Wine identification data: [LWIN © Liv-ex](https://www.liv-ex.com/lwin/), under 
 - Offline use begins after one successful online visit and service-worker installation. Cached pages, lessons, cellar, notes and local pairing rules work offline; LWIN search still requires the network. Service-worker updates activate after existing tabs close.
 - Run `npm run typecheck` and `npm test` in `frontend` for portable-app types and data integrity tests. `work/qa-server.py` serves isolated test catalog data on port 8767; it does not modify production configuration.
 
-The Academy Engine PDF is deferred. These changes add personal tasting sliders, not exam scoring or credential assessment.
+## Academy practice
+
+- Six original lessons span structured and deductive tracks, each with three levels, knowledge checks, notebook prompts and recall cards. Legacy courses remain under Library.
+- Daily deduction uses 26 hypothetical benchmark profiles. Structure appears first; learners commit an origin/climate hypothesis before seeing candidates or buying fruit. A provisional candidate is required before the non-fruit reveal. The final call locks before the discriminator MCQ.
+- Provisional reveal ceilings are 100 / 80 / 60 points. The candidate contributes 75% and the discriminator 25% of that ceiling. Initial geography/climate hypotheses are retained but unscored: structure does not establish an origin. Each attempt stores its reference and drill snapshots, reveal round and decisions.
+- Grid memory practice reconstructs supplied notes. It teaches vocabulary and is explicitly excluded from calibration.
+- Bottle practice starts with a blank observation grid, locks it, then asks for a conclusion. It requires a saved cellar bottle and an authored measured reference for the exact LWIN/vintage. Built-in profiles are hypothetical authoring templates, not measurements of commercial bottles. No measured commercial references ship by default.
+- Only full bottle-observation grids contribute to calibration, after ten valid calls per field. Linked journal slider comparisons remain partial and excluded. Conclusion scores and text drills never enter palate calibration.
+- Structured scoring uses 23 possible marks for reds and 22 for non-reds. Adjacent five-position calls receive half marks; three-position calls require an exact answer. Deduction conclusions use grape 35, region 25, country 15, vintage 15, quality 10. These are Decant practice rules, not official exam rubrics.
+- Recall uses a local-date queue capped at 25 reviews per day. Saved cellar metadata can create cards; no grapes, ratings or sensory references are inferred from LWIN.
+- Attempts append with idempotent IDs. Notebook exports include Academy history, recall schedules, custom lessons and references. Existing notebooks without Academy data migrate on read. Everything remains browser-local.
+- Open `?studio=1&view=academy`, then Author, to create lessons or measured references. This is local authoring, not access control. Publishing course content still requires updating the site source.

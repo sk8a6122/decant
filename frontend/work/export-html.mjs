@@ -11,7 +11,7 @@ code="import {portableRequest as request} from '../work/portable-api';\n"+code;
 
 code=code.replace("history.pushState({},'',v==='overview'?'/':'/?view='+v);","history.replaceState({},'',location.pathname+'?'+new URLSearchParams({...((new URLSearchParams(location.search).get('studio')==='1')?{studio:'1'}:{}),...(v==='overview'?{}:{view:v})}));");
 code=code.replace("history.pushState({},'','/?view=academy');","history.replaceState({},'',location.pathname+'?view=academy'+(new URLSearchParams(location.search).get('studio')==='1'?'&studio=1':''));");
-code=code.replace('progress:data.progress};','progress:data.progress,education:data.content};');
+code=code.replace('progress:data.progress,academy:data.academy||emptyAcademy()};','progress:data.progress,academy:data.academy||emptyAcademy(),education:data.content};');
 code=code.replace("['free','unrecognized'].includes(member.status)","['free','unrecognized','local'].includes(member.status)");
 code=code.replace('{member.admin&&<div className="panel wide">','{false&&<div className="panel wide">');
 code=code.replace('<a className="text-button" href="/signout-with-chatgpt?return_to=%2F" target="_top"><LogOut size={16}/>Sign out</a>','<button type="button" className="text-button" onClick={()=>go(\'overview\')}>Return to notebook</button>');
