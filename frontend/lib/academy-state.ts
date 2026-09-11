@@ -1,8 +1,9 @@
+import {scoreNote} from './structured-note.ts';
 import {mergeLessonProgress,type LessonCompletion} from './lesson-progress.ts';
 import {scoreDrill,drillFor,type Drill} from './deduction-drill.ts';
 import {scoreGrid,scoreDeduction,schedule,day,FIELDS,validateReference,type WineReference,type RecallState,type Score} from './academy-engine.ts';
 import {academyLessons,benchmarkReferences,type AcademyLesson} from './academy-content.ts';
-export type Attempt={id:string;at:string;kind:'grid'|'deduction'|'mcq'|'drill';contentId:string;title:string;answers:any;result:Score;referenceVersion?:number;drillSnapshot?:Drill;referenceSnapshot?:WineReference;partial?:boolean;observationSource?:'bottle'|'text';bottleId?:string;noteId?:string;elapsedSeconds?:number};
+export type Attempt={id:string;at:string;kind:'grid'|'deduction'|'mcq'|'drill';contentId:string;title:string;answers:any;result:Score;referenceVersion?:number;drillSnapshot?:Drill;referenceSnapshot?:WineReference;partial?:boolean;noteTranslation?:boolean;observationSource?:'bottle'|'text';bottleId?:string;noteId?:string;elapsedSeconds?:number};
 export type AcademyState={version:1;legacyProgress?:LessonCompletion[];attempts:Attempt[];reviews:{id:string;cardId:string;at:string;good:boolean}[];srs:Record<string,RecallState>;references:WineReference[];lessons:AcademyLesson[]};
 export const emptyAcademy=():AcademyState=>({version:1,attempts:[],reviews:[],srs:{},references:[],lessons:[]});
 export const referencesFor=(s:AcademyState)=>[...benchmarkReferences.filter(r=>!s.references.some(c=>c.id===r.id)),...s.references];
@@ -42,13 +43,13 @@ export function recordAttempt(state:AcademyState,body:any,records:any[],at=new D
    answers={};for(const key of ['acidity','tannin','body','finish'])if(note.data[key]!=null&&!(key==='tannin'&&ref.style!=='red'))answers['pal.'+key]=FIELDS['pal.'+key].scale[Number(note.data[key])-1];
    if(!Object.keys(answers).length)throw new Error('This note has no structural calls to compare.');partial=true;
   }
-  result=body.kind==='drill'?scoreDrill(answers,ref):body.kind==='grid'?scoreGrid(answers,ref):scoreDeduction(answers,ref);title=ref.title;version=ref.version;referenceSnapshot=structuredClone(ref);
+  result=body.kind==='drill'?scoreDrill(answers,ref):body.kind==='grid'?(body.noteTranslation&&body.observationSource!=='bottle'&&!body.noteId?scoreNote(answers,ref):scoreGrid(answers,ref)):scoreDeduction(answers,ref);title=ref.title;version=ref.version;referenceSnapshot=structuredClone(ref);
   if(partial){result.byField=Object.fromEntries(Object.entries(result.byField).filter(([k])=>k in answers));const rows=Object.values(result.byField);result.max=rows.reduce((n,r)=>n+r.max,0);result.marks=rows.reduce((n,r)=>n+r.marks,0);result.percent=Math.round(result.marks/result.max*100);result.messages=rows.map(r=>r.message).filter(Boolean);}
  }else if(body.kind==='mcq'){
   const lesson=lessonsFor(s).find(l=>l.id===body.contentId);if(!lesson)throw new Error('Lesson not found.');
   title=lesson.title;const byField=Object.fromEntries(lesson.checks.map((q,i)=>{const correct=answers[i]===q.answer;return [String(i),{given:answers[i],reference:q.options[q.answer],marks:correct?1:0,max:1,message:q.why}];}));const marks=Object.values(byField).reduce((n,r)=>n+r.marks,0),max=lesson.checks.length;result={byField,marks,max,percent:Math.round(marks/max*100),messages:Object.values(byField).map(r=>r.message)};
  }else throw new Error('Unknown exercise type.');
- s.attempts.push({id:body.id,at,kind:body.kind,contentId:body.contentId,title,answers,result,referenceVersion:version,referenceSnapshot,drillSnapshot:body.kind==='drill'&&referenceSnapshot?structuredClone(drillFor(referenceSnapshot)):undefined,partial,observationSource:body.observationSource==='bottle'?'bottle':'text',bottleId:body.observationSource==='bottle'?body.bottleId:undefined,noteId:body.noteId,elapsedSeconds:Number.isFinite(body.elapsedSeconds)?Math.max(0,Math.round(body.elapsedSeconds)):undefined});return s;
+ s.attempts.push({noteTranslation:body.kind==='grid'&&body.noteTranslation===true&&body.observationSource!=='bottle'&&!body.noteId,id:body.id,at,kind:body.kind,contentId:body.contentId,title,answers,result,referenceVersion:version,referenceSnapshot,drillSnapshot:body.kind==='drill'&&referenceSnapshot?structuredClone(drillFor(referenceSnapshot)):undefined,partial,observationSource:body.observationSource==='bottle'?'bottle':'text',bottleId:body.observationSource==='bottle'?body.bottleId:undefined,noteId:body.noteId,elapsedSeconds:Number.isFinite(body.elapsedSeconds)?Math.max(0,Math.round(body.elapsedSeconds)):undefined});return s;
 }
 export function reviewCard(state:AcademyState,body:any,records:any[],at=new Date().toISOString()){
  const s=structuredClone(state);if(s.reviews.some(r=>r.id===body.id))return s;
