@@ -11,6 +11,6 @@ export function labelReading(data:{text?:string;confidence?:number;tsv?:string},
  const names=rows.filter(l=>l.confidence>=70).map(l=>({...l,text:l.text.replace(/[^\p{L}\s'-]/gu,' ').replace(/\s+/g,' ').trim()})).filter(l=>{
   const words=l.text.split(' ');return words.length<=7&&words.some(w=>w.length>=5)&&words.filter(w=>w.length<=2).length<=words.length/3&&/[aeiouyàáâäèéêëìíîïòóôöùúûü]/i.test(l.text)&&!/bottled|contains|sulfite|sulphite|alcohol|imported|warning|product of|bouteille|since|founded|first vintage|anniversary/i.test(l.text);
  }).sort((a,b)=>b.height-a.height||b.confidence-a.confidence);
- const query=names.slice(0,2).map(l=>l.text).join(' ').slice(0,100);
+ const query=names.slice(0,1).map(l=>l.text).join(' ').slice(0,100);
  return {query,years:query?years:[],reliable:!!query};
 }
