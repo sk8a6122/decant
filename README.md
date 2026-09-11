@@ -1,6 +1,6 @@
 # Decant wine search
 
-GitHub Pages serves `index.html` and `catalog-config.js`. A separate Cloudflare Worker searches the D1 catalog. The catalog is not downloaded to visitors' browsers.
+GitHub Pages serves `index.html`, `assets/`, `sw.js`, and `catalog-config.js`. A separate Cloudflare Worker searches the D1 catalog. The catalog is not downloaded to visitors' browsers.
 
 ## Current status
 
@@ -12,7 +12,7 @@ The Pairings page accepts food and dish searches, suggests three useful wine sta
 
 ## Build
 
-Use Node 24 or newer. In `frontend`, install dependencies with `pnpm install`, then run `pnpm build`. This regenerates the root `index.html`. The complete source and existing UI styles are included.
+Use Node 24 or newer. In `frontend`, install dependencies with `pnpm install`, then run `pnpm build`. This regenerates the root `index.html`, versioned JS/CSS in `assets/`, responsive WebP images, and `sw.js`. Publish all of them together. The complete source and existing UI styles are included.
 
 ## Prepare the catalog
 
@@ -26,7 +26,7 @@ The import preserves all 212,356 catalog identities; only Live Wine and Fortifie
 2. Create a fresh D1 database and put its ID in `catalog-worker/wrangler.jsonc`.
 3. Install the worker dependencies. Import the generated SQL files in filename order using `wrangler d1 execute decant-wines --remote --file <file>`. Stop on any error. Do not replay the full import against an existing populated database.
 4. From `catalog-worker`, run `pnpm deploy`. Confirm `/health` returns `ready: true` and `searchableWines: 185351`, then test `/v1/wines?q=Vietti%20Barolo`.
-5. Set `window.DECANT_CATALOG_URL` in root `catalog-config.js` to that service's HTTPS URL. Publish the root HTML and config together to GitHub Pages.
+5. Set `window.DECANT_CATALOG_URL` in root `catalog-config.js` to that service's HTTPS URL. Publish the root HTML, assets, service worker and config together to GitHub Pages.
 
 Only `https://sk8a6122.github.io` is enabled as a browser origin. The service exposes public read-only catalog data; CORS is not authentication. No token belongs in the HTML or config file.
 
@@ -39,3 +39,15 @@ With the same environment variable, run `node catalog-worker/scripts/preview.mjs
 ## Attribution
 
 Wine identification data: [LWIN © Liv-ex](https://www.liv-ex.com/lwin/), under its [published licence](https://www.liv-ex.com/lwin-creative-commons-licence/). Records have been normalized and filtered for search. Liv-ex does not endorse Decant. Search results do not include critic ratings or drinking windows.
+
+## Notebook review fixes
+
+- Tasting notes carry `bottleId` plus a snapshot of wine details. Journal titles follow a linked bottle rename; removing the bottle leaves its note readable. Legacy notes link only when wine/producer/vintage (or LWIN/vintage) identify a single saved bottle.
+- The explicit “I opened one bottle” checkbox changes stock once. Editing or moving a tasting applies the difference; deleting a note does not restore consumed stock. Use the bottle quantity field to correct stock after a deletion.
+- Acidity, tannin, body and finish are optional 1–5 scores. Untouched sliders remain unrecorded. Export version 3 preserves links and scores; imports preserve IDs and do not replay stock changes. Reimporting an existing ID skips that entry.
+- Export is in the banner on every screen. Personal data remains in localStorage; export is still needed for backups.
+- `?studio=1` enables local authoring (for example `?studio=1&view=studio`). This is a UI switch, not authentication. Content changes affect this browser only.
+- Offline use begins after one successful online visit and service-worker installation. Cached pages, lessons, cellar, notes and local pairing rules work offline; LWIN search still requires the network. Service-worker updates activate after existing tabs close.
+- Run `npm run typecheck` and `npm test` in `frontend` for portable-app types and data integrity tests. `work/qa-server.py` serves isolated test catalog data on port 8767; it does not modify production configuration.
+
+The Academy Engine PDF is deferred. These changes add personal tasting sliders, not exam scoring or credential assessment.
