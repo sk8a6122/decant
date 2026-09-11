@@ -10405,6 +10405,15 @@ footer {
 .scan-year-options {
   margin-bottom: 12px;
 }
+.backup-banner .backup-button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 14px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  text-decoration: none;
+  justify-content: center;
+}
 @property --tw-translate-x {
   syntax: "*";
   inherits: false;

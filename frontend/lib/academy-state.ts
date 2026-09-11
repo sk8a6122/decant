@@ -1,8 +1,9 @@
+import {mergeLessonProgress,type LessonCompletion} from './lesson-progress.ts';
 import {scoreDrill,drillFor,type Drill} from './deduction-drill.ts';
 import {scoreGrid,scoreDeduction,schedule,day,FIELDS,validateReference,type WineReference,type RecallState,type Score} from './academy-engine.ts';
 import {academyLessons,benchmarkReferences,type AcademyLesson} from './academy-content.ts';
 export type Attempt={id:string;at:string;kind:'grid'|'deduction'|'mcq'|'drill';contentId:string;title:string;answers:any;result:Score;referenceVersion?:number;drillSnapshot?:Drill;referenceSnapshot?:WineReference;partial?:boolean;observationSource?:'bottle'|'text';bottleId?:string;noteId?:string;elapsedSeconds?:number};
-export type AcademyState={version:1;attempts:Attempt[];reviews:{id:string;cardId:string;at:string;good:boolean}[];srs:Record<string,RecallState>;references:WineReference[];lessons:AcademyLesson[]};
+export type AcademyState={version:1;legacyProgress?:LessonCompletion[];attempts:Attempt[];reviews:{id:string;cardId:string;at:string;good:boolean}[];srs:Record<string,RecallState>;references:WineReference[];lessons:AcademyLesson[]};
 export const emptyAcademy=():AcademyState=>({version:1,attempts:[],reviews:[],srs:{},references:[],lessons:[]});
 export const referencesFor=(s:AcademyState)=>[...benchmarkReferences.filter(r=>!s.references.some(c=>c.id===r.id)),...s.references];
 export const lessonsFor=(s:AcademyState)=>[...academyLessons.filter(r=>!s.lessons.some(c=>c.id===r.id)),...s.lessons];
@@ -60,7 +61,7 @@ export function mergeAcademy(current:AcademyState,incoming:any):AcademyState{
  for(const a of incoming.attempts){
   if(typeof a.id!=='string'||!['grid','deduction','mcq','drill'].includes(a.kind)||typeof a.at!=='string'||!Number.isFinite(Date.parse(a.at))||!a.result||!Number.isFinite(a.result.percent)||a.result.percent<0||a.result.percent>100||!Number.isFinite(a.result.max)||a.result.max<=0||!Number.isFinite(a.result.marks)||a.result.marks<0||a.result.marks>a.result.max||!a.result.byField||!Array.isArray(a.result.messages))throw new Error('Invalid Academy attempt in backup.');
  }
- const s=structuredClone(current);
+ const s=structuredClone(current);if(s.legacyProgress||incoming.legacyProgress)s.legacyProgress=mergeLessonProgress(s.legacyProgress,incoming.legacyProgress);
  for(const key of ['attempts','reviews','references','lessons'] as const){for(const entry of incoming[key])if(!s[key].some(e=>e.id===entry.id))(s[key] as any[]).push(entry);}
  for(const [key,value] of Object.entries(incoming.srs) as [string,RecallState][]){if(key==='__proto__'||key==='constructor'||key==='prototype')continue;if(!value||!Number.isFinite(value.ease)||value.ease<1.3||value.ease>2.8||!Number.isInteger(value.interval)||value.interval<1||!/^\d{4}-\d{2}-\d{2}$/.test(value.due))throw new Error('Invalid recall schedule.');if(!s.srs[key])s.srs[key]=value;}
  return s;

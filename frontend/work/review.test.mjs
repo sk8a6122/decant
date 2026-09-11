@@ -5,3 +5,4 @@ import './academy.test.mjs';
 import './bottle-details.test.mjs';
 
 import './label-reading.test.mjs';
+import './medium.test.mjs';

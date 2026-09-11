@@ -12,7 +12,7 @@ export function WineLookup({onSelect,scanSearch}:{onSelect:(wine:any,vintage:str
   if(!endpoint||query.trim().length<2)return ()=>controller.abort();
   setLoading(true);
   const timer=setTimeout(async()=>{
-   try{const response=await fetch(endpoint.replace(/\/$/,'')+'/v1/wines?q='+encodeURIComponent(query.trim()),{signal:controller.signal});
+   try{const response=await fetch(endpoint.replace(/\/$/,'')+'/v1/wines?q='+encodeURIComponent(query.trim().replace(/^lwin\s*[:#]?\s+(?=\d)/i,'')),{signal:controller.signal});
     if(!response.ok)throw new Error('unavailable');const data=await response.json();
     if(id===generation.current){setResult(data);setExpanded(true);setStatus(data.items.length?`${data.items.length} wine${data.items.length===1?'':'s'} found. Use up and down arrows to explore, then Enter to select.`:'No matches. Try a producer or wine name, or enter the details below.');}
    }catch(error:any){if(error.name!=='AbortError'&&id===generation.current)setStatus('Wine search is temporarily unavailable. You can still enter the details below.');}
