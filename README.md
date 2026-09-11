@@ -62,3 +62,13 @@ Wine identification data: [LWIN © Liv-ex](https://www.liv-ex.com/lwin/), under 
 - Recall uses a local-date queue capped at 25 reviews per day. Saved cellar metadata can create cards; no grapes, ratings or sensory references are inferred from LWIN.
 - Attempts append with idempotent IDs. Notebook exports include Academy history, recall schedules, custom lessons and references. Existing notebooks without Academy data migrate on read. Everything remains browser-local.
 - Open `?studio=1&view=academy`, then Author, to create lessons or measured references. This is local authoring, not access control. Publishing course content still requires updating the site source.
+
+## Bottle entry and notebook navigation
+
+Vintage is a searchable picker with NV first, then the current year back to 1980. A full earlier year is accepted as a custom vintage. Drinking-window pickers offer the current year through 2060 and past years back to 1980, with typed four-digit years supported. Reversed windows and incomplete vintages are rejected.
+
+The account currency defaults to USD and applies only to new bottles. Every bottle can override it; existing unlabelled prices retain their previous USD meaning. Purchase values are grouped by currency, never converted or added across currencies, and shown only in the cellar. Home no longer shows total bottle counts. Exports preserve the preference and bottle currency.
+
+Home opens Overview; Your notebook opens tasting and lesson notes, with category filters and a simpler lesson-note form. Both Academy lesson flows tag new reflections as lesson notes; older reflection titles and lesson IDs are also recognised.
+
+Label photos are read locally using [Tesseract.js](https://github.com/naptha/tesseract.js), pinned to 6.0.1 and loaded from jsDelivr only on demand. Initial reader/model downloads and LWIN search require a connection. The image is neither stored in the notebook nor uploaded; the user reviews extracted search words before sending them to the catalog and confirms a result before autofill. OCR is best-effort and requires checking the vintage against the label. A clear synthetic label was tested; real-world camera accuracy varies with typography, glare, angle and language.

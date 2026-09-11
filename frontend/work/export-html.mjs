@@ -14,7 +14,7 @@ code=code.replace("history.pushState({},'','/?view=academy');","history.replaceS
 code=code.replace('progress:data.progress,academy:data.academy||emptyAcademy()};','progress:data.progress,academy:data.academy||emptyAcademy(),education:data.content};');
 code=code.replace("['free','unrecognized'].includes(member.status)","['free','unrecognized','local'].includes(member.status)");
 code=code.replace('{member.admin&&<div className="panel wide">','{false&&<div className="panel wide">');
-code=code.replace('<a className="text-button" href="/signout-with-chatgpt?return_to=%2F" target="_top"><LogOut size={16}/>Sign out</a>','<button type="button" className="text-button" onClick={()=>go(\'overview\')}>Return to notebook</button>');
+code=code.replace('<a className="text-button" href="/signout-with-chatgpt?return_to=%2F" target="_top"><LogOut size={16}/>Sign out</a>','<button type="button" className="text-button" onClick={()=>go(\'journal\')}>Return to notebook</button>');
 code=code.replace('<main className="main" id="main">','<main className="main" id="main"><div className="banner backup-banner">Saved in this browser · <button onClick={exportData} className="backup-button"><Download size={14}/>Export notebook</button><span className="small">No account or cloud sync.</span></div>');
 for(const [a,b] of [
 ['OWNER ACCESS','LOCAL EDITOR'],['OWNER WORKSPACE','LOCAL EDUCATION EDITOR'],['Owner access','Browser notebook'],['Signed-in email','Storage location'],

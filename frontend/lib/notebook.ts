@@ -1,3 +1,4 @@
+import {currencyCode,validateYears} from './bottle-details.ts';
 export type Entry={id:string;kind:string;data:any};
 const text=(v:any)=>String(v??'').trim().toLocaleLowerCase();
 
@@ -19,6 +20,7 @@ export function saveEntry(records:Entry[],body:any,id:string):Entry[]{
   const previous=next.find(r=>r.id===id);
   if(previous&&previous.kind!==body.kind)throw new Error('Entry type cannot change.');
   if(body.kind==='bottle'){
+    data.vintage=validateYears(data);data.currency=currencyCode(data.currency);
     if(data.qty===''||!Number.isInteger(Number(data.qty))||Number(data.qty)<0)throw new Error('Enter a whole bottle quantity of zero or more.');
     data.qty=Number(data.qty);
     if(data.price!==''&&data.price!=null&&(!Number.isFinite(Number(data.price))||Number(data.price)<0))throw new Error('Enter a valid price or leave it blank.');

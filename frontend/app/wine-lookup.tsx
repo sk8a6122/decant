@@ -1,10 +1,11 @@
 import React,{useEffect,useId,useRef,useState} from 'react';
-export function WineLookup({onSelect}:{onSelect:(wine:any,vintage:string|null)=>void}){
+export function WineLookup({onSelect,scanSearch}:{onSelect:(wine:any,vintage:string|null)=>void;scanSearch?:{query:string;vintage:string;id:number}}){
  const [query,setQuery]=useState(''),[result,setResult]=useState<any>(null),[status,setStatus]=useState(''),[loading,setLoading]=useState(false);
  const generation=useRef(0);
+ useEffect(()=>{if(scanSearch){setQuery(scanSearch.query);setExpanded(false)}},[scanSearch]);
  const listId=useId(),[active,setActive]=useState(-1),[expanded,setExpanded]=useState(false);
  const items=result?.items||[],isOpen=expanded&&items.length>0;
- const select=(wine:any)=>{onSelect(wine,result.vintageHint);setQuery('');setResult(null);setExpanded(false);setActive(-1);};
+ const select=(wine:any)=>{onSelect(wine,scanSearch?.query===query?scanSearch.vintage||result.vintageHint:result.vintageHint);setQuery('');setResult(null);setExpanded(false);setActive(-1);};
  const endpoint=(window as any).DECANT_CATALOG_URL as string|undefined;
  useEffect(()=>{
   const id=++generation.current,controller=new AbortController();setResult(null);setStatus('');setLoading(false);setActive(-1);
