@@ -30,16 +30,59 @@ function BottlePractice({records,refs,onSave}:{records:any[];refs:WineReference[
  return <section className="academy-exercise"><p className="eyebrow">BOTTLE PRACTICE · {active.reference.style.toUpperCase()}</p><h2>{phase==='observe'?'Record what you notice.':phase==='call'?'Now make your call.':'Compare your observations.'}</h2>{error&&<p className="banner error" role="alert">{error}</p>}{phase==='observe'?<><GridFields grid={grid} setGrid={setGrid} style={active.reference.style} prefix="bottle-"/><label className="bottle-attestation"><input type="checkbox" checked={own} onChange={e=>setOwn(e.target.checked)}/>These are my observations from the glass, recorded before seeing the reference.</label><button className="primary" disabled={!own} onClick={()=>setPhase('call')}>Lock observations and make my call</button></>:phase==='call'?<form onSubmit={async e=>{e.preventDefault();setBusy(true);setError('');try{const common={contentId:active.reference.id,bottleId:active.bottle.id,observationSource:'bottle'};const observed=await onSave({...common,id:ids[0],kind:'grid',answers:grid});const conclusion=await onSave({...common,id:ids[1],kind:'deduction',answers:call});setResults([observed,conclusion]);setPhase('result')}catch(e:any){setError(e.message)}finally{setBusy(false)}}}><p>Your observations are locked. The reference stays concealed until you save your conclusion.</p><div className="form-grid">{['grape','region','country','vintage'].map(k=><Field key={k} label={pretty(k)} type={k==='vintage'?'number':'text'} value={call[k]} onChange={v=>setCall({...call,[k]:v})}/>)}<Pick label="Quality" value={call.quality||''} onChange={v=>setCall({...call,quality:v})} options={FIELDS['con.quality'].scale.map(v=>({value:v,label:pretty(v)}))}/><Field wide type="textarea" label="What separated your leading candidates?" value={call.reasoning} onChange={v=>setCall({...call,reasoning:v})}/></div><button className="primary" disabled={busy}>{busy?'Saving…':'Save and reveal the reference'}</button></form>:<><h3>{active.reference.title}</h3>{results.map(a=><div key={a.id}><h3>{a.kind==='grid'?'Your observations':'Your conclusion'}</h3><Result attempt={a}/></div>)}<p>Your observation grid contributes to calibration. Your conclusion is scored separately.</p></>}</section>
 }
 const STEPS=['Appearance','Nose','Palate','Conclusions'] as const;
-const GUIDE:Record<string,{eyebrow:string;heading:string;lead:string;tips:string[]}>={
- Appearance:{eyebrow:'PASS ONE · LOOK',heading:'Hold it against something plain.',lead:'Tilt the glass over a white surface and read the core first, then the rim. Record what you see and nothing you expect.',tips:['Clarity first. A haze is worth noticing before anything else.','Judge depth by looking straight down through the bowl.','Do not read age or quality into colour yet. That comes last.']},
- Nose:{eyebrow:'PASS TWO · SMELL',heading:'Short sniffs, not deep ones.',lead:'Swirl, then take a few short sniffs. Your nose adapts within seconds, so a long inhale gives you less, not more.',tips:['Condition first. If something is wrong, the rest of the note changes meaning.','Aim for five specific words. Raspberry, not red fruit.','Youthful or developed is a judgement about the character, not the vintage on the label.']},
- Palate:{eyebrow:'PASS THREE · TASTE',heading:'One call at a time.',lead:'Take enough to coat your mouth. Pause between calls so each one is its own decision rather than a general impression.',tips:['Acidity makes you salivate. Tannin dries and grips. They are easy to confuse.','Count the finish after you swallow or spit, honestly.','Expect flavours to echo the aromas. Where they do not, that is worth writing down.']},
- Conclusions:{eyebrow:'PASS FOUR · CONCLUDE',heading:'Point at your evidence.',lead:'Two decisions, both resting on what you already recorded. If you cannot name the evidence, you are guessing.',tips:['Quality lives in balance, length and how clear the flavours stay.','Readiness is about this bottle in front of you, not the appellation.','Your own window can go on the bottle afterwards, from the cellar card.']}
+type Term={term:string;gloss:string};
+const GUIDE:Record<string,{eyebrow:string;heading:string;lead:string;intro:string[];tips:string[];terms:Term[]}>={
+ Appearance:{eyebrow:'PASS ONE · LOOK',heading:'Hold it against something plain.',
+ lead:'Tilt the glass about thirty degrees over a white surface and look through the wine, not at it.',
+ intro:['Appearance is the shortest pass and the easiest to over-read. It answers three small questions: is the wine clear, how much colour is there, and which colour is it. That is all.','The useful information is at the rim, where the wine thins out against the glass. Reds start purple and move through ruby to garnet and tawny as they age. Whites travel the other way, gaining gold and amber. A young wine with an old colour, or the reverse, is worth remembering when you reach your conclusion.','Resist reading quality or price into colour. Deep does not mean good, and pale does not mean thin.'],
+ tips:['Clarity first. A haze is worth noticing before anything else.','Judge depth by looking straight down through the bowl, not from the side.','Read hue at the rim. The core is almost always darker and tells you less.'],
+ terms:[
+  {term:'Clarity',gloss:'Clear or hazy. Almost all wine is clear. Haze can be an unfiltered style or a fault, so record it and let the nose decide which.'},
+  {term:'Colour intensity',gloss:'How much colour, not which one. Look straight down through the bowl: if you can read text through the middle it is pale, if the stem disappears it is deep.'},
+  {term:'Colour',gloss:'The hue itself. Reds lose purple and gain orange with age; whites gain gold then amber. Rosé ranges from pale pink through salmon to orange.'}]},
+ Nose:{eyebrow:'PASS TWO · SMELL',heading:'Short sniffs, not deep ones.',
+ lead:'Swirl, then take a few short sniffs with a pause between them. Your nose adapts within seconds, so a long inhale returns less, not more.',
+ intro:['The nose is where most of what you call flavour actually happens, and it is the pass that rewards vocabulary most. Work in order: is it sound, how loud is it, how old does it smell, and then what exactly is in there.','When you name aromas, sort each one into where it came from. That single habit turns a list of words into an argument about the wine: a glass full of primary fruit with no tertiary character is young, and oak notes without fruit to carry them is a winemaking decision you can comment on.','Aim for five specific words. Raspberry, not red fruit. If nothing comes, name the closest thing in your kitchen and move on.'],
+ tips:['Condition first. If something is wrong, everything after it means something different.','Swirl to release aroma, then rest the glass for a moment before smelling again.','Youthful or developed is about the character in the glass, not the year on the label.'],
+ terms:[
+  {term:'Primary aromas',gloss:'From the grape and the fermentation. Fruit, flowers, herbs, grass, black pepper. Every wine has some.'},
+  {term:'Secondary aromas',gloss:'From winemaking after fermentation. Oak gives vanilla, toast, smoke, coconut, cedar. Lees ageing gives bread and yoghurt. Malolactic gives butter and cream.'},
+  {term:'Tertiary aromas',gloss:'From age. Oxygen gives nuts, caramel and coffee. Time in bottle gives mushroom, forest floor, leather, honey, dried fruit, and petrol on aged Riesling.'},
+  {term:'Condition',gloss:'Clean or unclean. Wet cardboard and damp basement suggest cork taint. Vinegar or nail polish suggest volatile acidity. A sound wine you dislike is still clean.'},
+  {term:'Aroma intensity',gloss:'How far the smell travels. Light means you have to go looking for it in the glass. Pronounced means it reaches you before the glass does.'},
+  {term:'Development',gloss:'Youthful is mostly primary. Developing shows some secondary or tertiary alongside the fruit. Fully developed is led by tertiary character. Tiring is when the fruit has gone and only the rest is left.'}]},
+ Palate:{eyebrow:'PASS THREE · TASTE',heading:'One call at a time.',
+ lead:'Take enough to coat your whole mouth. Pause between calls so each is its own decision rather than one blurred impression.',
+ intro:['The palate pass is mostly physical rather than flavoured. Sweetness, acidity, tannin, alcohol and body are things you feel, and they are the part of a note that stays useful years later when the descriptors have blurred.','Take them in a fixed order and finish each one before starting the next. The two most commonly confused are acidity and tannin: acidity makes your mouth water, tannin dries it out. A tart young red has both at once, which is exactly why you separate them.','Flavours come last, after the structure is recorded. Use the same three families as the nose, and pay attention to where the mouth tells you something the nose did not.'],
+ tips:['Swallow or spit, then count the seconds before you decide on the finish.','Judge alcohol by warmth, not by whether you like the wine.','Where a flavour appears on the palate but not the nose, write it down. That gap is often the most interesting line in the note.'],
+ terms:[
+  {term:'Sweetness',gloss:'Sugar, not ripe fruit. A wine can smell of mango and be bone dry. Notice it on the tip of the tongue in the first second.'},
+  {term:'Acidity',gloss:'Freshness. Swallow, then notice whether your mouth waters. Low acid feels round and soft, almost flat. High acid makes you salivate quickly and can feel tart or even sharp.'},
+  {term:'Tannin',gloss:'Grip, not a taste. Felt on the gums, teeth and roof of the mouth, drying like strong stewed tea. Mostly a red wine call. Low tannin feels smooth; high tannin leaves your mouth furred.'},
+  {term:'Alcohol',gloss:'Warmth. Low feels light and watery through the middle and finishes cool, roughly 11% and under. Medium is warm but unremarkable, around 12 to 14%. High leaves heat at the back of the throat and down the chest after you swallow, around 14.5% and up.'},
+  {term:'Body',gloss:'Overall weight and fullness in the mouth. Skim milk, whole milk, cream. Alcohol, sugar and extract all add to it; acidity cuts it back.'},
+  {term:'Flavour intensity',gloss:'How loud the flavours are once the wine is in your mouth. A separate question from whether they are good.'},
+  {term:'Finish',gloss:'How long the flavour lasts after the wine leaves your mouth. Count honestly: a few seconds is short, ten to fifteen is medium (+), beyond that is long. Judge the flavour that lingers, not the burn of alcohol.'},
+  {term:'Primary, secondary, tertiary flavours',gloss:'Same three families as the nose: grape, winemaking, age. Expect overlap with what you smelled, and note where they disagree.'}]},
+ Conclusions:{eyebrow:'PASS FOUR · CONCLUDE',heading:'Point at your evidence.',
+ lead:'Two decisions, both resting on what you already recorded. If you cannot name the evidence, you are guessing.',
+ intro:['Quality is not how much you liked it. It is balance, length, intensity and complexity considered together. A simple wine that does its job cleanly is good; a dense, expensive wine with a short finish and sharp alcohol is not.','Readiness is about this bottle, not the appellation it came from. Acidity and tannin are the scaffolding a wine ages on, and fruit is what fades first. Fruit still ahead of firm structure means there is time. Structure standing bare with the fruit gone means you waited too long.','Once you have a readiness call, it is worth putting a drinking window on the bottle in your cellar. That is what turns one tasting into a decision you benefit from next year.'],
+ tips:['Ask what would have to change for this to be one level better.','Balance means nothing sticks out awkwardly: no bare alcohol, no acid without fruit.','A conclusion that mentions the label rather than the glass is not a conclusion.'],
+ terms:[
+  {term:'Quality',gloss:'Balance, length, intensity and complexity. Ask whether any single part shouts over the others, and whether the wine holds your interest to the end of the glass.'},
+  {term:'Readiness',gloss:'Too young means the parts have not knit together yet. Drink now with potential means it is enjoyable and the structure could carry it further. Drink now means it is where it will ever be. Too old means the fruit has gone.'}]}
 };
+const COLOUR_SWATCH:Record<WineStyle,Record<string,string>>={
+ red:{purple:'#5c1a47',ruby:'#8d1c32',garnet:'#8e3a2b',tawny:'#a55d32',brown:'#6d3c26'},
+ white:{'lemon-green':'#dfe6a2',lemon:'#f0dd86',gold:'#e3b954',amber:'#c98c3c',brown:'#8b5b2c'},
+ rose:{pink:'#f3bac6',salmon:'#f2ab8c',orange:'#eeb17c'}
+};
+const INTENSITY_ALPHA:Record<string,number>={pale:.35,medium:.65,deep:1};
 const QUALITY_RATING:Record<string,number>={faulty:1,poor:1,acceptable:2,good:3,'very-good':4,outstanding:5};
 const NOTE_STYLE:Record<string,WineStyle>={'Red':'red','Rosé':'rose','Rose':'rose'};
 const level=(key:string,style:WineStyle,grid:Grid)=>{const i=fieldScale(key,style).indexOf(String(grid[key]||''));return i<0?undefined:i+1};
 const termList=(v:unknown)=>(Array.isArray(v)?v:[]).map((a:any)=>typeof a==='string'?a:a.term).map(t=>String(t).trim()).filter(Boolean);
+const baseHue=(style:WineStyle,grid:Grid)=>COLOUR_SWATCH[style][String(grid['app.colour']||'')]||COLOUR_SWATCH[style][Object.keys(COLOUR_SWATCH[style])[1]||'pink'];
 function guidedNoteText(grid:Grid,style:WineStyle){
  const say=(key:string)=>grid[key]?pretty(String(grid[key])):'';
  const line=(label:string,parts:string[])=>parts.filter(Boolean).length?label+': '+parts.filter(Boolean).join(', ')+'.':'';
@@ -51,6 +94,25 @@ function guidedNoteText(grid:Grid,style:WineStyle){
   [line('Palate',[say('pal.sweetness'),say('pal.acidity')&&'acidity '+say('pal.acidity'),style==='red'&&say('pal.tannin')?'tannin '+say('pal.tannin'):'',say('pal.alcohol')&&'alcohol '+say('pal.alcohol'),say('pal.body')&&'body '+say('pal.body'),say('pal.flavIntensity')&&'flavour intensity '+say('pal.flavIntensity'),say('pal.finish')&&'finish '+say('pal.finish')]),cap(flavours.join(', '))].filter(Boolean).join(' ')+(flavours.length?'.':''),
   [say('con.quality')&&'Conclusion: '+say('con.quality')+'.',say('con.readiness')&&cap(say('con.readiness'))+'.'].filter(Boolean).join(' ')
  ].filter(t=>t&&t!=='.').join('\n\n');
+}
+function Reference({terms}:{terms:Term[]}){
+ return <details className="guided-reference"><summary>What each call means</summary><dl>{terms.map(t=><div key={t.term}><dt>{t.term}</dt><dd>{t.gloss}</dd></div>)}</dl></details>;
+}
+// Appearance gets its own controls: a colour is far easier to match against a swatch than to pick from a list.
+function AppearanceStep({grid,setGrid,style}:{grid:Grid;setGrid:(g:Grid)=>void;style:WineStyle}){
+ const put=(key:string,v:unknown)=>setGrid({...grid,[key]:v});
+ const hue=baseHue(style,grid);
+ return <div className="appearance-step">
+  <fieldset><legend>Clarity</legend><div className="swatch-row">{[['clear','Clear','You can see through it cleanly'],['hazy','Hazy','Cloudy or dull, note it and read on']].map(([v,label,hint])=>
+   <button type="button" key={v} className={'swatch-option'+(grid['app.clarity']===v?' chosen':'')} aria-pressed={grid['app.clarity']===v} onClick={()=>put('app.clarity',v)}>
+    <span className={'swatch '+v} style={{background:hue}}/><strong>{label}</strong><small>{hint}</small></button>)}</div></fieldset>
+  <fieldset><legend>Colour intensity</legend><p className="small">Look straight down through the bowl.</p><div className="swatch-row">{['pale','medium','deep'].map(v=>
+   <button type="button" key={v} className={'swatch-option'+(grid['app.intensity']===v?' chosen':'')} aria-pressed={grid['app.intensity']===v} onClick={()=>put('app.intensity',v)}>
+    <span className="swatch" style={{background:hue,opacity:INTENSITY_ALPHA[v]}}/><strong>{pretty(v)}</strong></button>)}</div></fieldset>
+  <fieldset><legend>Colour</legend><p className="small">Read the hue at the rim, where the wine thins against the glass.</p><div className="swatch-row colours">{Object.entries(COLOUR_SWATCH[style]).map(([v,colour])=>
+   <button type="button" key={v} className={'swatch-option'+(grid['app.colour']===v?' chosen':'')} aria-pressed={grid['app.colour']===v} onClick={()=>put('app.colour',v)}>
+    <span className="swatch" style={{background:colour}}/><strong>{pretty(v)}</strong></button>)}</div></fieldset>
+ </div>;
 }
 function GuidedTasting({records,onTastingNote}:{records:any[];onTastingNote:(patch:any)=>void}){
  const cellar=records.filter(r=>r.kind==='bottle'&&Number(r.data.qty)>0);
@@ -64,18 +126,22 @@ function GuidedTasting({records,onTastingNote}:{records:any[];onTastingNote:(pat
   if(chosen){patch.bottleId=chosen.id;patch.producer=chosen.data.producer;patch.vintage=chosen.data.vintage;patch.lwin=chosen.data.lwin;patch.consumedBottles=0;}
   onTastingNote(patch);
  }
- if(step===0)return <section className="guided-tasting"><p className="eyebrow">GUIDED TASTING · FOUR PASSES</p><h2>Run the method on a real glass.</h2><p>Decant walks you through look, smell, taste and conclude, one screen at a time, then writes the whole thing into your notebook as a tasting note. Nothing is scored here. This is the method, not an exam.</p>
+ if(step===0)return <section className="guided-tasting"><p className="eyebrow">GUIDED TASTING · FOUR PASSES</p><h2>Run the method on a real glass.</h2>
+  <p>Decant walks you through look, smell, taste and conclude, one screen at a time, explaining what each call means as you reach it. At the end it writes the whole thing into your notebook as a tasting note. Nothing is scored here. This is the method, not an exam.</p>
+  <ol className="guided-overview">{STEPS.map((s,i)=><li key={s}><span>{i+1}</span><div><strong>{s}</strong><small>{GUIDE[s].lead}</small></div></li>)}</ol>
   {cellar.length>0&&<Pick label="Tasting something from your cellar?" value={bottleId} onChange={pick} options={cellar.map(b=>({value:b.id,label:`${b.data.name} · ${b.data.vintage||'NV'}`}))}/>}
   {!chosen&&<Field label="Or just name the wine" value={name} onChange={setName}/>}
   <Pick label="Wine colour" value={style} onChange={v=>setStyle(v as WineStyle)} options={[{value:'red',label:'Red'},{value:'white',label:'White'},{value:'rose',label:'Rosé'}]}/>
-  <p className="small">Colour decides which fields appear. Tannin is only asked for on reds.</p>
+  <p className="small">Colour decides which fields appear and which swatches you are matching against. Tannin is only asked for on reds.</p>
   <button className="primary" onClick={()=>setStep(1)}>Begin with what you see<ArrowUpRight size={16}/></button></section>;
  if(step===5)return <section className="guided-tasting"><button className="text-button" onClick={()=>setStep(4)}><ArrowLeft size={16}/>Back to conclusions</button><p className="eyebrow">YOUR NOTE</p><h2>{label}</h2><pre className="guided-preview">{guidedNoteText(grid,style)||'Nothing recorded yet.'}</pre><p className="small">Saving opens the note form with these details filled in, including the structure sliders and your aromas as tags. Edit anything before you save it to your notebook.</p><div className="guided-actions"><button className="primary" onClick={save}><NotebookPen size={16}/>Write this into my notebook</button><button className="outline-button" onClick={()=>{setGrid({});setStep(0)}}>Start a new tasting</button></div></section>;
  return <section className="guided-tasting"><button className="text-button" onClick={()=>setStep(step-1)}><ArrowLeft size={16}/>{step===1?'Change the wine':'Back to '+STEPS[step-2].toLowerCase()}</button>
   <ol className="guided-steps">{STEPS.map((s,i)=><li key={s} aria-current={i+1===step?'step':undefined} className={i+1<step?'done':i+1===step?'current':''}>{i+1<step?<Check size={14}/>:<span>{i+1}</span>}{s}</li>)}</ol>
-  <p className="eyebrow">{guide!.eyebrow}</p><h2>{guide!.heading}</h2><p>{guide!.lead}</p>
+  <p className="eyebrow">{guide!.eyebrow}</p><h2>{guide!.heading}</h2><p className="guided-lead">{guide!.lead}</p>
+  <div className="guided-intro">{guide!.intro.map(t=><p key={t}>{t}</p>)}</div>
   <ul className="guided-tips">{guide!.tips.map(t=><li key={t}>{t}</li>)}</ul>
-  <GridFields grid={grid} setGrid={setGrid} style={style} prefix={'guided-'+section+'-'} sections={[section]}/>
+  <Reference terms={guide!.terms}/>
+  {section==='Appearance'?<AppearanceStep grid={grid} setGrid={setGrid} style={style}/>:<GridFields grid={grid} setGrid={setGrid} style={style} prefix={'guided-'+section+'-'} sections={[section]}/>}
   <button className="primary" onClick={()=>setStep(step+1)}>{step===4?'Review my note':'Next: '+STEPS[step].toLowerCase()}<ArrowUpRight size={16}/></button>
   <p className="small">Leave a field blank if you truly cannot call it. A blank is honest; a guess recorded as a call is not.</p></section>;
 }
