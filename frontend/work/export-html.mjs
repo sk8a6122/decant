@@ -12,7 +12,9 @@ code=code.replace('export default function Experience(){','export default functi
 code=code.replace("history.pushState({},'',v==='overview'?'/':'/?view='+v);","history.replaceState({},'',location.pathname+'?'+new URLSearchParams({...((new URLSearchParams(location.search).get('studio')==='1')?{studio:'1'}:{}),...(v==='overview'?{}:{view:v})}));");
 code=code.replace("history.pushState({},'','/?view=academy');","history.replaceState({},'',location.pathname+'?view=academy'+(new URLSearchParams(location.search).get('studio')==='1'?'&studio=1':''));");
 code=code.replace('progress:data.progress,academy:data.academy||emptyAcademy()};','progress:data.progress,academy:data.academy||emptyAcademy(),education:data.content};');
-code=code.replace('<main className="main" id="main">','<main className="main" id="main"><AccountBar refresh={refresh} request={request} exportData={exportData} ready={!!member && !loading && !error} records={data.records}/>');
+const accountAnchor='{view===\'account\'&&(member?<div className="account-grid">';
+if(!code.includes(accountAnchor))throw new Error('Account view anchor not found; the account controls would be dropped.');
+code=code.replace(accountAnchor,accountAnchor+'<AccountBar refresh={refresh} request={request} exportData={exportData} ready={!!member && !loading && !error} records={data.records}/>');
 return {code,map:null};}};
 const bundle=await rolldown({input:'app/client.tsx',platform:'browser',plugins:[plugin],resolve:{alias:{'@':process.cwd()}},transform:{define:{'process.env.NODE_ENV':JSON.stringify('production')},jsx:{runtime:'automatic'}}});
 const result=await bundle.generate({format:'iife',minify:true});

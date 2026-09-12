@@ -1,6 +1,6 @@
 // Only Decant's static files are cached; catalog requests stay online.
-const CACHE='decant-shell-7c28b980d13d';
-const FILES=["./index.html","./catalog-config.js","./supabase-config.js","./assets/app-880a40011972.js","./assets/app-1c810e4e0f02.css","./assets/wine-editorial-800.webp","./assets/wine-editorial-1600.webp"];
+const CACHE='decant-shell-403b62694af3';
+const FILES=["./index.html","./catalog-config.js","./supabase-config.js","./assets/app-cd6da1a806af.js","./assets/app-e257dd3ccb0d.css","./assets/wine-editorial-800.webp","./assets/wine-editorial-1600.webp"];
 const urls=FILES.map(file=>new URL(file,self.registration.scope).href);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(urls))));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('decant-shell-')&&key!==CACHE)await caches.delete(key);await self.clients.claim();})()));
