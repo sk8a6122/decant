@@ -58,6 +58,16 @@ div:has(> .choice-menu) { z-index: 150; }
 .suggested-bottle > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .suggested-bottle strong { font-weight: 500; }
 .suggested-bottle small { color: #697461; overflow-wrap: anywhere; }
+.pairing-modes { margin-top: 22px; width: 100%; }
+.pairing-modes button { display: flex; align-items: center; justify-content: center; gap: 7px; flex: 1; font-size: 13px; padding: 9px 8px; }
+.pairing-cellar-list { margin-top: 18px; max-height: 430px; overflow: auto; border-top: 1px solid #cbd2c1; }
+.pairing-cellar-option { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; text-align: left; padding: 14px 10px; border-bottom: 1px solid #cbd2c1; }
+.pairing-cellar-option > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pairing-cellar-option strong { font-weight: 500; overflow-wrap: anywhere; }
+.pairing-cellar-option small { color: #697461; overflow-wrap: anywhere; }
+.pairing-cellar-option svg { flex: 0 0 auto; }
+.pairing-switch { display: flex; align-items: center; gap: 8px; margin-top: 18px; font-size: 13px; text-align: left; text-decoration: underline; }
+.pairing-tip { margin-top: 24px !important; padding: 14px 16px; border-left: 3px solid #acb78f; background: rgba(237, 239, 229, .72); font-size: 14px; }
 
 @media (max-width: 720px) {
   .pairing-search-layout { grid-template-columns: 1fr; }
@@ -117,6 +127,11 @@ div:has(> .choice-menu) { z-index: 150; }
 .pairing-options article > span { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border-radius: 50%; color: #fffaf3; background: linear-gradient(145deg, rgba(133, 50, 66, .92), rgba(91, 36, 48, .78)); border: 1px solid rgba(255, 255, 255, .45); box-shadow: 0 8px 18px rgba(86, 35, 46, .16), inset 0 1px rgba(255, 255, 255, .35); font-size: 15px; }
 .suggested-bottle { transition: color .2s, padding .2s, background .2s; border-radius: 4px; }
 .suggested-bottle:hover { color: #793746; padding-inline: 10px; background: rgba(255, 250, 246, .48); }
+.pairing-cellar-option { border-radius: 4px; transition: color .2s, background .2s, padding .2s; }
+.pairing-cellar-option:hover { color: #793746; padding-inline: 16px; background: rgba(255, 250, 246, .6); }
+.pairing-cellar-option.selected { color: #763847; background: #e9ecdf; }
+.pairing-switch { color: #763847; }
+.pairing-modes button[data-active] { color: #763847; }
 
 @media (max-width: 720px) {
   .pairing-search-layout::before { width: 220px; height: 220px; right: -25px; top: 220px; }

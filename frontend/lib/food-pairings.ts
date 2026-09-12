@@ -81,3 +81,8 @@ export function cellarPairingMatches(bottles:CellarRecord[],recommendations:Pair
  }).filter(match=>match.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
 }
 
+// Shared with the reverse (wine to food) engine so both directions use one source of truth.
+export type {PairingProfile,PairingRecommendation};
+export const normalizeText=normalize;
+export const matchesTerm=contains;
+export const pairingSources=()=>[...pairingProfiles,...expanded,vinegar,sourCream,cheesy];
