@@ -2,6 +2,11 @@ import assert from 'node:assert/strict';
 import {wineFor,pairingForBottle,cellarMatchesForWine,detectPairingMode,normalizeStyle} from '../lib/wine-pairings.ts';
 import {pairingFor} from '../lib/food-pairings.ts';
 
+// Catalog selections use the same classifier without inventing missing grape details.
+assert.equal(pairingForBottle({lwin:'1234567',name:'Estate Pinot Noir',displayName:'Estate Pinot Noir',style:'Red',region:'Oregon'}).label,'Pinot Noir');
+assert.equal(pairingForBottle({lwin:'1234568',name:'Unknown cuvée',style:'White',region:'Bordeaux'}).exact,false);
+assert.equal(pairingForBottle({lwin:'1234569',name:'Unknown cuvée',style:'',region:''}),null);
+
 // A wine search resolves grapes, regions and label synonyms to one profile.
 const lookups=[
  ['chianti','Sangiovese','Red'],['Brunello di Montalcino','Sangiovese','Red'],
@@ -88,4 +93,3 @@ assert.equal(pairingForBottle(bottle({name:'Cabernet Sauvignon Estate',grape:'Ca
 assert.equal(pairingForBottle(bottle({name:'Unknown',producer:'Pinot Noir Family',style:'Red'})).exact,false);
 assert.deepEqual(cellarMatchesForWine([bottle({name:'Bordeaux Blanc',style:'White'})],wineFor('bordeaux')),[]);
 assert.equal(cellarMatchesForWine([bottle({name:'Unknown',producer:'Pinot Noir Family',style:'Red'})],wineFor('pinot noir'))[0].exact,false);
-
