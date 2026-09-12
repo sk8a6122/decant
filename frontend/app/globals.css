@@ -232,3 +232,5 @@ footer { border-color: #d9b9c1; color: #86465a; }
 .scan-crop{position:relative;overflow:hidden;touch-action:none;user-select:none;margin:12px 0;max-width:360px}.label-scan .scan-crop img{width:100%;height:auto;max-height:none;margin:0;pointer-events:none}.scan-crop-box{position:absolute;border:3px solid #fff;outline:2px solid #6a2d43;box-shadow:0 0 0 800px #0006;pointer-events:none}.label-scan details{margin:12px 0}.scan-year-options button{margin:5px}.scan-year-options{margin-bottom:12px}
 
 .backup-banner .backup-button{min-height:44px;min-width:44px;padding:10px 14px;border:1px solid currentColor;border-radius:8px;text-decoration:none;justify-content:center;}
+
+.account-strip{margin-bottom:1.5rem}.account-strip .backup-banner{flex-wrap:wrap;gap:1rem}.account-auth{max-width:30rem;margin:1rem auto;display:grid;gap:1rem}.account-loading{max-width:40rem;margin:8vh auto;padding:2rem}.account-import{padding:1rem 0}.account-import summary{cursor:pointer;font-weight:600}.account-import p{max-width:65ch;margin:1rem 0}.account-strip [role=alert]{color:#922a3d}.account-strip [role=status]{font-weight:600}

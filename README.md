@@ -1,3 +1,29 @@
+# Decant accounts update
+
+GitHub Pages hosts the interface; Supabase provides email/password authentication and private cloud notebooks. Pricing and subscription UI are on hold.
+
+## Enable the backend
+
+1. Run `supabase/migrations/202609120001_accounts.sql` once in the Supabase SQL Editor.
+2. In Authentication URL Configuration, use `https://sk8a6122.github.io/decant/` for Site URL and allowed redirect URL. Keep email confirmation enabled. Configure a production email sender in Supabase before inviting general users; default email delivery may restrict recipients or rate-limit messages.
+3. The browser-safe Project URL and publishable key are in `supabase-config.js`. Never put a secret or service-role key there.
+4. Build from `frontend` with `pnpm install --frozen-lockfile` then `pnpm build`. Publish the root `index.html`, `assets/`, `sw.js`, `catalog-config.js`, and `supabase-config.js` together.
+5. Test a real signup, email confirmation, sign-in, password reset, sign-out, and two different users before launch. Check cross-user reads/writes are denied. No live user credentials were used during implementation.
+
+## Saving and migration
+
+Signed-out use keeps the original browser notebook. Signed-in requests read/write only the user's Supabase row; no cloud notebook is copied into guest local storage. An explicit account control copies browser records and Academy progress into the account, preserving IDs and skipping duplicates, while leaving the original browser notebook intact. Legacy JSON import and export remain available.
+
+Account saves require a connection and report failures. Cloud refresh retrieves other-device changes. Atomic revision checks reject simultaneous conflicting writes rather than silently overwriting a notebook. Signed-in offline editing and automatic background synchronization are not implemented. Sign-out retains the separate guest notebook; Supabase session tokens are removed from this browser. Custom education editing is personal notebook content, never global administrator access.
+
+## Validation
+
+`pnpm typecheck`, the existing `pnpm test`, and `node work/accounts.test.mjs` in `frontend`. The browser smoke script `work/accounts-browser.cjs` uses mocked Supabase responses and requires Playwright and a runnable browser. Browser execution was blocked by this desktop environment, so no browser pass is claimed. Actual backend checks confirmed email signup enabled and anonymous notebook reads denied. Email delivery, recovery redirects, and authenticated cross-user isolation still need live acceptance testing.
+
+---
+
+## Previous feature notes
+
 # Decant wine search
 
 GitHub Pages serves `index.html`, `assets/`, `sw.js`, and `catalog-config.js`. A separate Cloudflare Worker searches the D1 catalog. The catalog is not downloaded to visitors' browsers.

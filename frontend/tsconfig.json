@@ -17,6 +17,7 @@
   },
   "include": [
     "app/client.tsx",
-    "work/portable-api.ts"
+    "work/portable-api.ts",
+    "work/account-api.ts"
   ]
 }

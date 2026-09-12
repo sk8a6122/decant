@@ -7,3 +7,5 @@ catalog-worker/data/
 *.sqlite
 *.sqlite3
 dist/
+
+frontend/work/test-build/
