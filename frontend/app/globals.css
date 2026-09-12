@@ -234,3 +234,5 @@ footer { border-color: #d9b9c1; color: #86465a; }
 .backup-banner .backup-button{min-height:44px;min-width:44px;padding:10px 14px;border:1px solid currentColor;border-radius:8px;text-decoration:none;justify-content:center;}
 
 .account-strip{margin-bottom:1.5rem}.account-strip .backup-banner{flex-wrap:wrap;gap:1rem}.account-auth{max-width:30rem;margin:1rem auto;display:grid;gap:1rem}.account-loading{max-width:40rem;margin:8vh auto;padding:2rem}.account-import{padding:1rem 0}.account-import summary{cursor:pointer;font-weight:600}.account-import p{max-width:65ch;margin:1rem 0}.account-strip [role=alert]{color:#922a3d}.account-strip [role=status]{font-weight:600}
+
+.social-panel{margin:1rem 0}.social-panel hr{margin:1.5rem 0}.social-person{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;border-bottom:1px solid #ddd}.social-entries{max-height:24rem;overflow:auto}.social-person input[type=checkbox]{width:1.1rem;height:1.1rem;margin-right:.5rem}.shared-profile{max-width:1200px;margin:auto;padding:2rem}.shared-profile h1{margin-top:2rem}.shared-note{white-space:pre-wrap;overflow-wrap:anywhere}

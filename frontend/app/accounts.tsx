@@ -1,3 +1,4 @@
+import {SocialPanel} from './social';
 import React,{createContext,useContext,useEffect,useState} from 'react';
 import {supabase,setAccount,currentAccount} from '../lib/account-store';
 const AccountContext=createContext<any>({user:null});
@@ -43,19 +44,21 @@ function AuthForm({mode:initial='signin',onDone}:{mode?:string;onDone:()=>void})
   {mode!=='update'&&<div className="account-actions">{['signin','signup','reset'].filter(m=>m!==mode).map(m=><button type="button" className="text-button" key={m} disabled={busy} onClick={()=>{setMode(m);setError('');setNotice('')}}>{m==='signup'?'Create account':m==='reset'?'Forgot password?':'Sign in'}</button>)}<button type="button" className="text-button" onClick={onDone}>Close</button></div>}
  </form>;
 }
-export function AccountBar({refresh,request,exportData,ready}:{ready:boolean;refresh:()=>Promise<void>;request:(p:string,b?:any)=>Promise<any>;exportData:()=>void}){
+export function AccountBar({refresh,request,exportData,ready,records}:{records:any[];ready:boolean;refresh:()=>Promise<void>;request:(p:string,b?:any)=>Promise<any>;exportData:()=>void}){
+ const [showSocial,setShowSocial]=useState(false);
  const {user}=useContext(AccountContext),[show,setShow]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  async function action(fn:()=>Promise<any>,message=''){
   setBusy(true);setError('');setNotice('');try{await fn();setNotice(message)}catch(e:any){setError(e.message)}finally{setBusy(false)}
  }
  return <section className="account-strip" aria-label="Notebook account">
   <div className="banner backup-banner"><span>{user?'Account notebook · '+user.email:'Saved in this browser'}</span><button className="backup-button" disabled={!ready} onClick={exportData}>Export notebook</button>
-   {user?<><button className="backup-button" disabled={busy} onClick={()=>action(refresh)}>Refresh cloud notebook</button><button className="backup-button" disabled={busy} onClick={()=>action(async()=>{const r=await supabase!.auth.signOut({scope:'local'});if(r.error)throw r.error;})}>Sign out</button></>:<button className="backup-button" disabled={!supabase} onClick={()=>setShow(!show)}>Sign in / Create account</button>}
+   {user?<><button className="backup-button" onClick={()=>setShowSocial(!showSocial)}>Friends & sharing</button><button className="backup-button" disabled={busy} onClick={()=>action(refresh)}>Refresh cloud notebook</button><button className="backup-button" disabled={busy} onClick={()=>action(async()=>{const r=await supabase!.auth.signOut({scope:'local'});if(r.error)throw r.error;})}>Sign out</button></>:<button className="backup-button" disabled={!supabase} onClick={()=>setShow(!show)}>Sign in / Create account</button>}
   </div>
   {user&&<details className="account-import"><summary>Bring your browser notebook into this account</summary><p>Copy the cellar, notes, gatherings, and learning progress saved in this browser to {user.email}. Existing entry IDs are kept and duplicates skipped. Your original browser notebook stays here. Only copy it if it belongs to you.</p><button className="outline-button" disabled={busy} onClick={()=>action(async()=>{await request('import-browser',{});await refresh()},'Browser notebook copied to your account.')}>Copy my browser notebook</button></details>}
   {!supabase&&<p className="small">Account setup is not complete. Your browser notebook still works.</p>}
   {user&&<p className="small">Account changes save online. Refresh to load changes from another device.</p>}
   {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
+  {showSocial&&user&&<SocialPanel records={records}/>}
   {show&&!user&&<AuthForm onDone={()=>setShow(false)}/>}
  </section>;
 }

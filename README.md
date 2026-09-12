@@ -1,3 +1,9 @@
+## Friends and collection sharing
+
+Run `supabase/migrations/202609120002_social.sql` once. In the signed-in account bar, open Friends & sharing to choose a unique username, send/accept requests, block/remove friends, and set Private (default), Friends only, or Public visibility. Public links use `?profile=username` and support signed-out visitors. Individual private-entry overrides take precedence. Only allowlisted bottle fields and tasting-note text/ratings are returned; prices, locations, host records and learning notes stay private. Usernames and display names remain discoverable by exact username even when a collection is private. Free-text tasting notes can contain personal information; the save form explains what will be shared.
+
+Sharing reads the current notebook through an access-checked database function; notebook table permissions stay owner-only. Privacy/friendship changes apply on the next server request; already viewed information cannot be recalled. Blocking prevents authenticated interaction, but public profiles remain accessible when signed out. SQL integration tests in an isolated PostgreSQL-compatible database passed for private/friends/public access, recipient-only acceptance, pending requests, private overrides, sensitive-field exclusion, direct table isolation, remove/block/unblock and privacy revocation. Live unauthenticated RPC checks also passed. Browser visual testing remains unverified in this environment.
+
 # Decant accounts update
 
 GitHub Pages hosts the interface; Supabase provides email/password authentication and private cloud notebooks. Pricing and subscription UI are on hold.
