@@ -10,7 +10,7 @@ export const FIELDS:Record<string,Field>={
  'app.colour':{label:'Color',section:'Appearance',kind:'list',scale:[],marks:1},
  'nose.condition':{label:'Condition',section:'Nose',kind:'list',scale:['clean','unclean'],marks:1},
  'nose.intensity':{label:'Aroma intensity',section:'Nose',kind:'5pt',scale:['light','medium-','medium','medium+','pronounced'],marks:1},
- 'nose.development':{label:'Development',section:'Nose',kind:'list',scale:['youthful','developing','fully-developed','tiring'],marks:1},
+ 'nose.development':{label:'Young or aged · optional',section:'Nose',kind:'list',scale:['youthful','developing','fully-developed','tiring'],marks:1},
  'pal.sweetness':{label:'Sweetness',section:'Palate',kind:'list',scale:['dry','off-dry','medium-dry','medium-sweet','sweet','luscious'],marks:1},
  'pal.acidity':{label:'Acidity',section:'Palate',kind:'5pt',scale:five,marks:1},
  'pal.tannin':{label:'Tannin',section:'Palate',kind:'5pt',scale:five,marks:1,redsOnly:true},
@@ -23,7 +23,9 @@ export const FIELDS:Record<string,Field>={
 };
 export const COLOURS={red:['purple','ruby','garnet','tawny','brown'],white:['lemon-green','lemon','gold','amber','brown'],rose:['pink','salmon','orange']};
 export const READINESS:Record<string,string>={'too-young':'Too young','drink-or-age':'Can drink now but has potential for aging','drink-now':'Drink now, not suitable for aging','too-old':'Too old'};
-export const pretty=(v:string)=>READINESS[v]||v.replace('medium-','medium (−)').replace('medium+','medium (+)').replaceAll('-',' ');
+export const pretty=(v:string)=>READINESS[v]||(v==='medium-'?'medium (−)':v==='medium+'?'medium (+)':v.replaceAll('-',' '));
+// Sentence case for anything shown as a choice: options and swatch captions read as labels, not as mid-sentence words.
+export const title=(v:string)=>{const t=pretty(v);return t?t.charAt(0).toUpperCase()+t.slice(1):t;};
 export const norm=(value:unknown)=>typeof value==='string'?value.trim().toLowerCase().replace(/\s+/g,' '):'';
 export const CATEGORY=new Set(['fruit','berries','red fruit','black fruit','citrus','stone fruit','tropical fruit','green fruit','dried fruit','floral','herbaceous','spice','oak','earthy','savoury','savory','mineral']);
 export const fieldScale=(key:string,style:WineStyle)=>key==='app.colour'?COLOURS[style]:FIELDS[key].scale;
