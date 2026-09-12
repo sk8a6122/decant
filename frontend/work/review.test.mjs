@@ -9,3 +9,5 @@ import './medium.test.mjs';
 import './structured-note.test.mjs';
 import './food-pairings.test.mjs';
 import './wine-pairings.test.mjs';
+
+import "./oregon.test.mjs";

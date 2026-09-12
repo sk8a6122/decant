@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import OregonMap from './oregon-map';
 // One projected outline of California, reused at different zooms. Points are real coordinates
 // run through an equirectangular projection, so the shape and the relative positions are honest.
 // Everything drawn on top is a simplified marker, not a survey boundary.
@@ -39,6 +40,7 @@ const SPECS:Record<string,MapSpec>={
 };
 const TONE={cool:'#4a6b86',warm:'#8c4652',plain:'#4f6b45'};
 export function RegionMap({focus}:{focus:string}){
+ if(focus.startsWith('oregon-'))return <OregonMap focus={focus}/>;
  const spec=SPECS[focus];
  if(!spec)return null;
  const id='ca-'+focus;

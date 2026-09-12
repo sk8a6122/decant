@@ -18,6 +18,124 @@ export const initialContent:Education[]=[
 {title:'What California does to the grapes',map:'zones',body:'Sunshine is reliable here in a way it is not in most of Europe, and that shows up in the glass. Riper fruit, fuller body, usually higher alcohol. It is a difference of degree, not of quality.\n\nCabernet Sauvignon reads as cassis and blackberry rather than the leafier, more savory register of Bordeaux, with rounder tannins. Chardonnay covers the full range: lean and citrusy from cold coastal sites, and rich, buttery and oaky in the style that made California famous in the eighties. Both exist today and neither is wrong. Pinot Noir tends toward darker fruit, cherry and cola, with more weight than red Burgundy. Zinfandel is close to a native specialty, brambly and peppery with high alcohol, and the best of it comes from old vines that have been there a century. Sauvignon Blanc is riper and rounder than the Loire or New Zealand versions. Syrah and the other Rhone grapes have quietly become some of the state’s most interesting wines.\n\nOne thing worth knowing if you have not been paying attention for a decade: the state has shifted. The very ripe, very oaked, very high-alcohol style peaked a while ago, and a lot of producers now pick earlier and use less new oak. If your mental image of California wine was formed twenty years ago, it is worth tasting again.',question:'How does California Cabernet usually differ from Bordeaux?',options:['Riper, darker fruit and rounder tannin','Consistently lower alcohol','It is always sweeter'],answer:0},
 
 {title:'Reading the label and buying well',body:'American labeling follows a few rules that are worth knowing, because they tell you how much the words guarantee.\n\nIf a wine names a grape, at least 75 percent of it has to be that grape. If it names an AVA, at least 85 percent of the grapes came from there. If it names a vintage alongside an AVA, at least 95 percent came from that year. And a wine labeled simply California must be made entirely from California grapes, which is a state rule rather than a federal one.\n\nSo the specificity of the appellation tells you something. California, then a county, then an AVA, then a sub-AVA: each step narrows what you are buying. A single vineyard name narrows it further still. None of that guarantees you will like the wine, but it does tell you how much the producer is willing to commit to.\n\nPractical shopping: Napa Cabernet under about thirty dollars is usually blended widely and sold on the name. The same money in Paso Robles, Lodi, the Sierra Foothills or Mendocino buys something far more specific. Alexander Valley and Santa Barbara are reliable middle ground. Old-vine Zinfandel from Dry Creek or Lodi is one of the better value propositions in the state.\n\nNext time you open a California bottle, write down which AVA it came from and where it sits relative to the nearest gap in the hills. Three or four notes in, the map starts assembling itself.',question:'A bottle says Cabernet Sauvignon, Alexander Valley, 2021. What is guaranteed?',options:['It is 100 percent Cabernet from that valley','At least 75 percent Cabernet, 85 percent from Alexander Valley, 95 percent from 2021','Only that it was made in California'],answer:1}]},
+{
+ "id": "oregon",
+ "kind": "course",
+ "title": "Oregon, beyond the Pinot habit",
+ "summary": "Follow the mountains, valleys and wind. Six lessons connecting Oregon’s places to the wines in your glass.",
+ "category": "Regions",
+ "tier": 0,
+ "status": "published",
+ "regions": [
+  "Oregon",
+  "Willamette Valley",
+  "Dundee Hills",
+  "Eola-Amity Hills",
+  "Van Duzer Corridor",
+  "Yamhill-Carlton",
+  "Ribbon Ridge",
+  "Chehalem Mountains",
+  "Laurelwood District",
+  "Tualatin Hills",
+  "McMinnville",
+  "Lower Long Tom",
+  "Mount Pisgah, Polk County, Oregon",
+  "Southern Oregon",
+  "Umpqua Valley",
+  "Elkton Oregon",
+  "Red Hill Douglas County",
+  "Rogue Valley",
+  "Applegate Valley",
+  "Columbia Gorge",
+  "Walla Walla Valley",
+  "The Rocks District of Milton-Freewater",
+  "Snake River Valley"
+ ],
+ "grapes": [
+  "Pinot Noir",
+  "Chardonnay",
+  "Pinot Gris",
+  "Riesling",
+  "Gamay",
+  "Tempranillo",
+  "Syrah",
+  "Viognier",
+  "Cabernet Sauvignon"
+ ],
+ "body": [
+  {
+   "title": "Start with the mountains",
+   "map": "oregon-overview",
+   "body": "Oregon is easier to understand once you stop treating it as one cool, rainy place. Start with the Pacific to the west, the Coast Range just inland, and the Cascades farther east. The Willamette Valley sits between those mountain ranges. The Columbia Gorge cuts through the Cascades, while Southern Oregon has its own network of hills and valleys.\n\nIn the Willamette Valley, the Coast Range offers shelter from Pacific storms. Summers bring warmth, evenings cool down, and the growing season gives grapes time to ripen. This combination helps explain the region’s reputation for Pinot Noir. Chardonnay, Pinot Gris and Riesling belong in the picture too.\n\nThe useful question is where the vineyard sits within that landscape. “Oregon” gets you to the state; a regional name helps you ask better questions about the wine. It is a starting point, not a tasting note written in advance.\n\nYour notebook prompt: “My bottle comes from ___. The first thing I want to know about that place is ___.”\n\nFurther reading: https://www.oregonwine.org/regions/willamette-valley/\n\nExplore the regional map: https://www.oregonwine.org/regions/avas/",
+   "question": "Why is “Oregon” alone not enough to predict a wine’s style?",
+   "options": [
+    "Every Oregon vineyard has the same climate",
+    "Mountain ranges and local geography create different growing conditions",
+    "Only Pinot Noir can be grown there"
+   ],
+   "answer": 1
+  },
+  {
+   "title": "Willamette, one valley with many voices",
+   "map": "oregon-willamette",
+   "body": "Think of Willamette Valley as the broad address, with smaller AVAs giving you a closer look. You do not need to memorize every name. Start with a few places and something useful about each.\n\nDundee Hills is associated with red volcanic soils. Eola-Amity Hills is a good place to think about wind: Pacific air passing through the Van Duzer Corridor helps cool the vineyards. The Van Duzer Corridor is also an AVA in its own right. These are different kinds of clues, one about the ground and another about exposure.\n\nMarine sedimentary soils and windblown deposits also appear around the wider valley. None of those soil names is a flavor you must find in your glass. Slope, elevation, the season and the producer’s choices all matter alongside geology.\n\nTry a comparison using notes you already have. Put two Willamette wines side by side on paper. Did one feel fresher, fuller or more drying? Record the producer and vintage before deciding the difference must be the place.\n\nYour notebook prompt: “These wines share a valley, but I noticed ___.”\n\nFurther reading: https://www.oregonwine.org/regions/willamette-valley/dundee-hills-ava/\n\nFurther reading: https://www.oregonwine.org/regions/willamette-valley/eola-amity-hills-ava/\n\nFurther reading: https://www.willamettewines.com/about-the-valley/ava-overviews/",
+   "question": "What is a useful way to interpret an Eola-Amity Hills label?",
+   "options": [
+    "As a guarantee of one exact flavor",
+    "As a sign that the wine must be sweet",
+    "As a clue to place, including cooling wind exposure"
+   ],
+   "answer": 2
+  },
+  {
+   "title": "Head south, widen the possibilities",
+   "map": "oregon-south",
+   "body": "Southern Oregon includes the Umpqua and Rogue valleys and their smaller appellations. It gives you a useful reset if your image of the state begins and ends with Pinot Noir.\n\nThe Umpqua is especially varied. Around Elkton in the north, marine influence supports cool-climate grapes. Farther south around Roseburg, conditions become warmer, with opportunities for grapes such as Tempranillo and Syrah. “Umpqua Valley” is therefore a reason to ask where within the valley the fruit grew.\n\nThe Rogue Valley brings another mix of mountain influences, elevations and exposures. Warm days and cool nights can occur together. Cabernet Sauvignon, Syrah and Viognier are part of its range, along with Pinot Noir and Chardonnay. Applegate Valley sits within the Rogue Valley appellation.\n\nUse the region to widen your options rather than prescribe a favorite. If a guest usually chooses a fuller red, Southern Oregon is somewhere worth exploring; the grape and the particular bottle still decide the conversation.\n\nYour notebook prompt: “An Oregon grape beyond Pinot Noir I would like to explore is ___, because ___.”\n\nFurther reading: https://www.oregonwine.org/regions/umpqua-valley/\n\nFurther reading: https://www.oregonwine.org/regions/rogue-valley/",
+   "question": "Which statement best describes Southern Oregon?",
+   "options": [
+    "A range of sites supporting both cool- and warm-climate grapes",
+    "A region where every site is too hot for Pinot Noir",
+    "Another name for the Willamette Valley"
+   ],
+   "answer": 0
+  },
+  {
+   "title": "The Gorge changes as you travel east",
+   "map": "oregon-gorge",
+   "body": "The Columbia Gorge follows the river along the Oregon–Washington border. The appellation crosses that border, so it is not an Oregon-only region.\n\nHere the lesson is west to east. The western end is cooler, wetter and more influenced by marine air. Farther east, conditions become drier and more continental. The river corridor also channels persistent wind, while elevation changes the conditions at individual vineyards.\n\nThat combination creates room for a wide range of grapes over a relatively short distance. Asking “Which end of the Gorge?” can tell you more than assuming every bottle shares one regional style.\n\nKeep Columbia Gorge and Columbia Valley separate in your notes: they are different appellations. The broader Oregon wine map also includes cross-border regions such as Walla Walla Valley and Snake River Valley. A state line does not stop a growing region.\n\nYour notebook prompt: “The label says ___. I want to check whether that region crosses a state line, and where this vineyard sits.”\n\nFurther reading: https://www.oregonwine.org/regions/columbia-gorge/\n\nExplore the regional map: https://www.oregonwine.org/regions/avas/",
+   "question": "What happens as you move east through the Columbia Gorge?",
+   "options": [
+    "The climate becomes uniformly wetter",
+    "Conditions generally become drier and more continental",
+    "The influence of vineyard elevation disappears"
+   ],
+   "answer": 1
+  },
+  {
+   "title": "Look beyond the Pinot habit",
+   "map": "oregon-overview",
+   "body": "Pinot Noir is an excellent doorway into Oregon, but it does not have to be the whole visit. Willamette Valley also produces Chardonnay, Pinot Gris, Riesling and sparkling wines, among other styles. Farther south, you have already met a different set of possibilities.\n\nThe most useful exercise is to choose one question before you read a description. With a white wine, try: does my mouth water, how much weight does the wine have, and what remains after the sip? With a red, add the drying sensation of tannin. Separate what you feel from what you smell.\n\nThen make a small comparison. If you usually drink Pinot Noir, revisit an old Chardonnay or Pinot Gris note. Which sensations did you describe in both? Which words were simply copied from an expectation about the grape?\n\nThere is no need to open several bottles for this. Your existing journal can become the lesson. Leave anything you did not record blank rather than reconstructing a confident memory.\n\nYour notebook prompt: “I expected ___. What I actually recorded was ___. Next time I will pay attention to ___.”\n\nFurther reading: https://www.oregonwine.org/regions/willamette-valley/",
+   "question": "What makes a comparison between two tasting notes useful?",
+   "options": [
+    "Making both notes fit a regional stereotype",
+    "Guessing the details you did not record",
+    "Comparing recorded sensations and leaving missing details unknown"
+   ],
+   "answer": 2
+  },
+  {
+   "title": "Turn the label into a useful question",
+   "body": "Before looking at a score, read the producer, grape, vintage and place. Does the bottle name Oregon, Willamette Valley, or a smaller place such as Dundee Hills? Each gives you a different level of geographic detail. Greater specificity is information, not a promise that you will prefer the wine.\n\nUse the region to ask one practical question. For an Eola-Amity Hills wine, you might ask about wind exposure. For a Rogue Valley bottle, ask about the site and grape. For a Columbia Gorge wine, ask where it sits along the west-to-east transition.\n\nWhen choosing a bottle, tell the person helping you what you enjoy and what you want to spend. “I liked the freshness of my last Pinot, but would like to try an Oregon white” is more useful than asking for the best Oregon wine.\n\nSave the bottle to your cellar with the place as printed. After tasting, add a short observation and the occasion you would choose it for again. That closes the loop between the map, the bottle and your own experience.\n\nYour notebook prompt: “This bottle’s place is ___. My question for the next bottle is ___.”\n\nFurther reading: https://www.willamettewines.com/about-the-valley/ava-overviews/",
+   "question": "What does a more specific regional name give you?",
+   "options": [
+    "A closer geographic clue, but no guarantee of personal preference",
+    "A guarantee that the wine is better",
+    "The exact flavors everyone will taste"
+   ],
+   "answer": 0
+  }
+ ]
+},
  {id:'pairing-principles',kind:'course',title:'A seat at the table',summary:'Understand how food changes wine, then put the idea to work at dinner.',category:'Food & wine',tier:2,status:'published',body:[
 {title:'Taste the food, then the wine',body:'Food can change how a wine tastes. A pairing is an experience, not a rigid rule. Begin with the dominant part of the dish: its sauce, sweetness, salt, acidity, or chilli.\n\nTry a small taste of wine on its own, then after a bite of food. Note what changed.\n\nFurther reading: https://www.wsetglobal.com/knowledge-center/blog/2023/july/13/four-rules-to-masterful-food-and-wine-pairing/'},
 {title:'Work with sweetness and heat',body:'Sweet food can make a dry wine seem less fruity and more bitter. With chilli, alcohol can intensify the sensation of heat. These are useful starting points, not promises about everyone’s preferences.\n\nAt your next dinner, compare the wine before and after a small bite. If the combination feels harsh, try water and enjoy the food without forcing a match.\n\nFurther reading: https://www.wsetglobal.com/knowledge-center/blog/2026/how-to-pair-drinks-with-spice'},
