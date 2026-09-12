@@ -30,10 +30,29 @@ const jsName='app-'+digest(js)+'.js',cssName='app-'+digest(css)+'.css';
 await fs.writeFile('../assets/'+jsName,js);
 await fs.writeFile('../assets/'+cssName,css);
 for(const size of [800,1600])await fs.copyFile('public/assets/wine-editorial-'+size+'.webp','../assets/wine-editorial-'+size+'.webp');
-const html='<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#742c46"><title>Decant — Your wine notebook</title><meta name="description" content="Your wine cellar, tasting journal and learning academy."><link rel="icon" href="'+favicon+'"><link rel="stylesheet" href="./assets/'+cssName+'"></head><body><div id="root"><p style="padding:2rem;font-family:Georgia,serif">Opening Decant…</p></div><noscript>Enable JavaScript to use the Decant notebook.</noscript><script src="./catalog-config.js"></script><script src="./supabase-config.js"></script><script defer src="./assets/'+jsName+'"></script><script>if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}</script></body></html>';
+const icons=['icon-192.png','icon-512.png','icon-maskable-512.png'];
+for(const name of icons)await fs.copyFile('public/assets/'+name,'../assets/'+name);
+const manifest=JSON.stringify({
+ name:'Decant — Your wine notebook',short_name:'Decant',
+ description:'Your wine cellar, tasting journal and learning academy.',
+ start_url:'./',scope:'./',display:'standalone',orientation:'portrait',
+ background_color:'#f7f5ef',theme_color:'#742c46',categories:['food','lifestyle','education'],
+ icons:[
+  {src:'./assets/icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},
+  {src:'./assets/icon-512.png',sizes:'512x512',type:'image/png',purpose:'any'},
+  {src:'./assets/icon-maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}
+ ],
+ shortcuts:[
+  {name:'My cellar',url:'./?view=cellar'},
+  {name:'Write a note',url:'./?view=journal'},
+  {name:'Guided tasting',url:'./?view=academy'}
+ ]
+},null,1);
+await fs.writeFile('../manifest.webmanifest',manifest);
+const html='<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#742c46"><title>Decant — Your wine notebook</title><meta name="description" content="Your wine cellar, tasting journal and learning academy."><link rel="icon" href="'+favicon+'"><link rel="stylesheet" href="./assets/'+cssName+'"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./assets/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Decant"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head><body><div id="root"><p style="padding:2rem;font-family:Georgia,serif">Opening Decant…</p></div><noscript>Enable JavaScript to use the Decant notebook.</noscript><script src="./catalog-config.js"></script><script src="./supabase-config.js"></script><script defer src="./assets/'+jsName+'"></script><script>if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}</script></body></html>';
 await fs.writeFile('../index.html',html);
-const version=digest(html+js+css+await fs.readFile('../catalog-config.js','utf8')+await fs.readFile('../supabase-config.js','utf8'));
-const precache=['./index.html','./catalog-config.js','./supabase-config.js','./assets/'+jsName,'./assets/'+cssName,'./assets/wine-editorial-800.webp','./assets/wine-editorial-1600.webp'];
+const version=digest(html+js+css+manifest+await fs.readFile('../catalog-config.js','utf8')+await fs.readFile('../supabase-config.js','utf8'));
+const precache=['./index.html','./manifest.webmanifest','./catalog-config.js','./supabase-config.js','./assets/'+jsName,'./assets/'+cssName,'./assets/wine-editorial-800.webp','./assets/wine-editorial-1600.webp',...icons.map(name=>'./assets/'+name)];
 const worker=`// Only Decant's static files are cached; catalog requests stay online.
 const CACHE='decant-shell-${version}';
 const FILES=${JSON.stringify(precache)};

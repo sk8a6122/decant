@@ -1,0 +1,50 @@
+{
+ "name": "Decant — Your wine notebook",
+ "short_name": "Decant",
+ "description": "Your wine cellar, tasting journal and learning academy.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f7f5ef",
+ "theme_color": "#742c46",
+ "categories": [
+  "food",
+  "lifestyle",
+  "education"
+ ],
+ "icons": [
+  {
+   "src": "./assets/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "./assets/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "./assets/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "My cellar",
+   "url": "./?view=cellar"
+  },
+  {
+   "name": "Write a note",
+   "url": "./?view=journal"
+  },
+  {
+   "name": "Guided tasting",
+   "url": "./?view=academy"
+  }
+ ]
+}
