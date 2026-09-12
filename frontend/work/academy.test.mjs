@@ -4,7 +4,7 @@ import {scoreGrid,scoreDeduction,scoreDescriptors,schedule,calibration,validateR
 import {benchmarkReferences,academyLessons} from '../lib/academy-content.ts';
 import {emptyAcademy,recordAttempt,mergeAcademy,dueCards,reviewCard,validateLesson} from '../lib/academy-state.ts';
 const red=benchmarkReferences[0],white=benchmarkReferences[10];
-const correct=ref=>({...ref.grid,'nose.aromas':ref.aromas,'pal.flavours':ref.flavours});
+const correct=ref=>({...ref.grid,'nose.aromas':ref.aromas,'pal.flavours':ref.flavors});
 test('all 26 original references and six lessons are valid',()=>{assert.equal(benchmarkReferences.length,26);benchmarkReferences.forEach(validateReference);academyLessons.forEach(validateLesson)});
 test('red and white totals are 23 and 22 with equal percentages',()=>{const r=scoreGrid(correct(red),red),w=scoreGrid(correct(white),white);assert.equal(r.max,23);assert.equal(w.max,22);assert.equal(r.percent,100);assert.equal(w.percent,100)});
 test('scale errors, ranges, blank fields and adjacent half marks',()=>{

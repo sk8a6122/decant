@@ -12,7 +12,7 @@ export default function DailyDrill({reference,onBack,onSave,renderResult}:{refer
  {round>=2&&<section className="case-clue"><h3>2 · Fruit character</h3><p>{drill.fruit.join(', ')}.</p></section>}
  {round>=3&&<section className="case-clue"><h3>3 · Non-fruit aromas</h3><p>{drill.nonFruit.join(', ')}.</p></section>}
  {error&&<p role="alert" className="banner error">{error}</p>}
- {result?<>{renderResult(result)}<p className="small">This was a hypothetical benchmark. It practises reasoning from supplied observations and does not contribute to palate calibration.</p><button className="primary" onClick={onBack}>Choose another case</button></>:<>
+ {result?<>{renderResult(result)}<p className="small">This was a hypothetical benchmark. It practices reasoning from supplied observations and does not contribute to palate calibration.</p><button className="primary" onClick={onBack}>Choose another case</button></>:<>
  <div className="hypothesis-grid">{choices('Initial origin hypothesis',['Old World','New World','Uncertain'],world,setWorld,committed)}{choices('Initial climate hypothesis',['Cool / moderate','Warm','Uncertain'],climate,setClimate,committed)}</div>
  {!committed?<><p className="small">A hypothesis, not proof. These choices are saved for reflection and do not earn correctness points.</p><button className="primary" disabled={!world||!climate} onClick={()=>setCommitted(true)}>Commit my hypothesis</button></>:<>
  {choices('Which candidate fits best?',drill.candidates,choice,setChoice,locked)}

@@ -65,7 +65,7 @@ assert.equal(pairingForBottle(bottle({name:'Marchesi di Barolo, Barolo',style:'R
 const styleOnly=pairingForBottle(bottle({name:'Unlabelled house red',style:'Red'}));
 assert.equal(styleOnly.label,'Red wine');
 assert.equal(styleOnly.exact,false);
-// A stated style is trusted over a place name that belongs to another colour.
+// A stated style is trusted over a place name that belongs to another color.
 assert.equal(pairingForBottle(bottle({name:'Château Blanc',style:'White',region:'Bordeaux'})).label,'White wine');
 assert.equal(pairingForBottle(bottle({name:'Mystery',style:''})),null);
 assert.equal(pairingForBottle(null),null);

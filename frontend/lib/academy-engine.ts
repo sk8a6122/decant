@@ -1,13 +1,13 @@
 export type WineStyle='red'|'white'|'rose';
 export type Descriptor={term:string;stage?:'primary'|'secondary'|'tertiary'};
 export type Grid=Record<string,unknown>;
-export type WineReference={id:string;title:string;style:WineStyle;level:1|2|3;regions:string[];grapes:string[];country:string;region:string;parentRegions:string[];vintage:number;quality:string;grid:Grid;aromas:Descriptor[];flavours:string[];clue:string;lwin?:string;referenceVintage?:string;version:number;};
+export type WineReference={id:string;title:string;style:WineStyle;level:1|2|3;regions:string[];grapes:string[];country:string;region:string;parentRegions:string[];vintage:number;quality:string;grid:Grid;aromas:Descriptor[];flavors:string[];clue:string;lwin?:string;referenceVintage?:string;version:number;};
 export type Field={label:string;section:string;kind:'list'|'3pt'|'5pt';scale:string[];marks:number;redsOnly?:boolean};
 const five=['low','medium-','medium','medium+','high'];
 export const FIELDS:Record<string,Field>={
  'app.clarity':{label:'Clarity',section:'Appearance',kind:'list',scale:['clear','hazy'],marks:1},
- 'app.intensity':{label:'Colour intensity',section:'Appearance',kind:'3pt',scale:['pale','medium','deep'],marks:1},
- 'app.colour':{label:'Colour',section:'Appearance',kind:'list',scale:[],marks:1},
+ 'app.intensity':{label:'Color intensity',section:'Appearance',kind:'3pt',scale:['pale','medium','deep'],marks:1},
+ 'app.colour':{label:'Color',section:'Appearance',kind:'list',scale:[],marks:1},
  'nose.condition':{label:'Condition',section:'Nose',kind:'list',scale:['clean','unclean'],marks:1},
  'nose.intensity':{label:'Aroma intensity',section:'Nose',kind:'5pt',scale:['light','medium-','medium','medium+','pronounced'],marks:1},
  'nose.development':{label:'Development',section:'Nose',kind:'list',scale:['youthful','developing','fully-developed','tiring'],marks:1},
@@ -16,13 +16,13 @@ export const FIELDS:Record<string,Field>={
  'pal.tannin':{label:'Tannin',section:'Palate',kind:'5pt',scale:five,marks:1,redsOnly:true},
  'pal.alcohol':{label:'Alcohol',section:'Palate',kind:'3pt',scale:['low','medium','high'],marks:1},
  'pal.body':{label:'Body',section:'Palate',kind:'5pt',scale:['light','medium-','medium','medium+','full'],marks:1},
- 'pal.flavIntensity':{label:'Flavour intensity',section:'Palate',kind:'5pt',scale:['light','medium-','medium','medium+','pronounced'],marks:1},
+ 'pal.flavIntensity':{label:'Flavor intensity',section:'Palate',kind:'5pt',scale:['light','medium-','medium','medium+','pronounced'],marks:1},
  'pal.finish':{label:'Finish',section:'Palate',kind:'5pt',scale:['short','medium-','medium','medium+','long'],marks:1},
  'con.quality':{label:'Quality',section:'Conclusions',kind:'list',scale:['faulty','poor','acceptable','good','very-good','outstanding'],marks:1},
  'con.readiness':{label:'Readiness',section:'Conclusions',kind:'list',scale:['too-young','drink-or-age','drink-now','too-old'],marks:1}
 };
 export const COLOURS={red:['purple','ruby','garnet','tawny','brown'],white:['lemon-green','lemon','gold','amber','brown'],rose:['pink','salmon','orange']};
-export const READINESS:Record<string,string>={'too-young':'Too young','drink-or-age':'Can drink now but has potential for ageing','drink-now':'Drink now, not suitable for ageing','too-old':'Too old'};
+export const READINESS:Record<string,string>={'too-young':'Too young','drink-or-age':'Can drink now but has potential for aging','drink-now':'Drink now, not suitable for aging','too-old':'Too old'};
 export const pretty=(v:string)=>READINESS[v]||v.replace('medium-','medium (−)').replace('medium+','medium (+)').replaceAll('-',' ');
 export const norm=(value:unknown)=>typeof value==='string'?value.trim().toLowerCase().replace(/\s+/g,' '):'';
 export const CATEGORY=new Set(['fruit','berries','red fruit','black fruit','citrus','stone fruit','tropical fruit','green fruit','dried fruit','floral','herbaceous','spice','oak','earthy','savoury','savory','mineral']);
@@ -51,11 +51,11 @@ export function scoreDescriptors(input:unknown,acceptedInput:string[],required:n
  return {marks:Math.min(hits.length,required),max:required,given:input,reference:[...accepted],message:messages.join(' '),hits,missed};
 }
 export function validateReference(ref:WineReference){
- if(!ref||!COLOURS[ref.style]||!ref.id||!ref.title||!Array.isArray(ref.aromas)||!Array.isArray(ref.flavours))throw new Error('Reference is incomplete.');
+ if(!ref||!COLOURS[ref.style]||!ref.id||!ref.title||!Array.isArray(ref.aromas)||!Array.isArray(ref.flavors))throw new Error('Reference is incomplete.');
  for(const [key,f] of Object.entries(FIELDS))if(!(f.redsOnly&&ref.style!=='red')&&!fieldScale(key,ref.style).includes(ref.grid?.[key] as string))throw new Error(`Reference ${f.label.toLowerCase()} is missing or invalid.`);
  if(ref.style!=='red'&&ref.grid['pal.tannin'])throw new Error('Non-red references must omit tannin.');
  if(ref.aromas.some(d=>!['primary','secondary','tertiary'].includes(d.stage||'')))throw new Error('Tag each reference aroma as primary, secondary or tertiary.');
- if(new Set(ref.aromas.map(d=>norm(d.term)).filter(d=>d&&!CATEGORY.has(d))).size<5||new Set(ref.flavours.map(norm).filter(d=>d&&!CATEGORY.has(d))).size<3)throw new Error('Add at least five specific aromas and three flavours.');
+ if(new Set(ref.aromas.map(d=>norm(d.term)).filter(d=>d&&!CATEGORY.has(d))).size<5||new Set(ref.flavors.map(norm).filter(d=>d&&!CATEGORY.has(d))).size<3)throw new Error('Add at least five specific aromas and three flavors.');
  if(!ref.grapes?.length||!ref.country||!ref.region||!Number.isInteger(ref.vintage)||ref.vintage<1900||ref.vintage>2100||!FIELDS['con.quality'].scale.includes(ref.quality))throw new Error('Complete the deduction reference: grape, country, region, vintage and quality.');
  if(!!ref.lwin!==!!ref.referenceVintage)throw new Error('A bottle reference needs both LWIN and the exact vintage.');
 }
@@ -71,7 +71,7 @@ export function scoreGrid(given:Grid,ref:WineReference):Score{
   rows[key]=row;
  }
  rows['nose.aromas']=scoreDescriptors(given['nose.aromas'],ref.aromas.map(d=>d.term),5,'Aromas');
- rows['pal.flavours']=scoreDescriptors(given['pal.flavours'],ref.flavours,3,'Flavours');
+ rows['pal.flavours']=scoreDescriptors(given['pal.flavours'],ref.flavors,3,'Flavors');
  if(Array.isArray(given['nose.aromas'])&&given['nose.aromas'].some(d=>typeof d!=='object'||!['primary','secondary','tertiary'].includes(d?.stage)))extra.push('Tag each aroma as primary, secondary or tertiary. Descriptor marks assess the words; category tags are feedback only.');
  return finish(rows,extra);
 }

@@ -6,7 +6,7 @@ const cases=[
  ['rigatoni with tomato sauce','Tomato-led dishes'],['penne pesto','Pesto, herbs, and vegetables'],
  ['fettuccine alfredo','Creamy and buttery dishes'],['rigatoni with mushrooms','Mushrooms and earthy dishes'],
  ['potato chips','Classic salty snacks'],['salt & vinegar potato chips','Salt & vinegar snacks'],
- ['BBQ chips','Barbecue and smoky flavours'],['sour cream & onion chips','Sour cream & onion snacks'],
+ ['BBQ chips','Barbecue and smoky flavors'],['sour cream & onion chips','Sour cream & onion snacks'],
  ['jalapeño chips','Spicy snacks'],['cheddar popcorn','Cheesy snacks'],
  ['truffle chips','Truffle and mushroom snacks'],['dill pickle chips','Salt & vinegar snacks'],
  ['ranch chips','Sour cream & onion snacks'],['pretzels','Classic salty snacks'],

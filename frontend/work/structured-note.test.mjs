@@ -5,7 +5,7 @@ import {recordAttempt,emptyAcademy} from '../lib/academy-state.ts';
 for(const ref of benchmarkReferences){
  const exercise=noteExercise(ref);
  assert.ok(exercise.paragraphs.every(p=>p&&!p.includes('undefined')));
- const answers={...ref.grid,'nose.aromas':ref.aromas,'pal.flavours':ref.flavours};
+ const answers={...ref.grid,'nose.aromas':ref.aromas,'pal.flavours':ref.flavors};
  const score=scoreNote(answers,ref);
  assert.equal(score.percent,100);
  for(const key of ['pal.alcohol','con.quality','con.readiness','nose.intensity']){
