@@ -17,6 +17,10 @@ const s=await storage.read()||freshNotebook();
 const save=(next:any)=>storage.write(next);
 if(s.schemaVersion!==4){s.records=linkLegacyNotes(s.records);s.academy=s.academy||emptyAcademy();s.academy.legacyProgress=mergeLessonProgress(s.academy.legacyProgress,s.progress);delete s.progress;s.schemaVersion=4;}
 s.academy=s.academy||emptyAcademy();
+// Stock education published after a notebook was created still has to reach it. Existing entries are never overwritten.
+s.content=Array.isArray(s.content)?s.content:[];
+const newlyPublished=initialContent.filter(c=>!s.content.some((x:any)=>x.id===c.id));
+if(newlyPublished.length)s.content=[...s.content,...structuredClone(newlyPublished)];
 if(path==='bootstrap')return {member:{...storage.member(),name:s.name,currency:s.currency||'USD',admin:new URLSearchParams(location.search).get('studio')==='1',tier:0},records:s.records,academy:s.academy,progress:s.academy.legacyProgress||[],content:s.content.map((c:any)=>({...c,locked:false,lessonCount:c.body.length})),plans:[],billingReady:false,launch:null};
 if(path==='records'&&method==='DELETE'){s.records=s.records.filter((r:any)=>r.id!==body.id);await save(s);return {deleted:true}}
 if(path==='records'){const id=body.id||crypto.randomUUID();s.records=saveEntry(s.records,body,id);await save(s);return {saved:true,id}}
