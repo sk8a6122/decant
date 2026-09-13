@@ -26,30 +26,81 @@ export const OREGON_MAPS:Record<string,Spec>={
 const project=(lon:number,lat:number):[number,number]=>[(lon+124.8)*59, (46.4-lat)*67];
 const outline=[[-124.57,42],[-124.4,42.7],[-124.5,42.9],[-124.18,43.4],[-124.05,44.1],[-123.96,45],[-123.97,45.75],[-124.05,46.25],[-123.5,46.2],[-123.15,46.18],[-122.78,45.85],[-122.76,45.65],[-122.25,45.55],[-121.7,45.7],[-121.15,45.62],[-120.7,45.73],[-119.9,45.93],[-119.1,46],[-116.92,46],[-116.7,45.8],[-116.46,45.56],[-116.7,45.3],[-116.85,45.1],[-117.03,44.97],[-116.94,44.7],[-117.18,44.3],[-117.03,44],[-117.03,42],[-124.57,42]];
 const outlinePath=outline.map(([lon,lat],i)=>(i?'L':'M')+project(lon,lat).join(' ')).join(' ')+'Z';
-const colors={cool:'#4a6b86',warm:'#8c4652',plain:'#4f6b45'};
+const labelLayouts:Record<string,Array<[number,number,'start'|'end']>>={
+ 'oregon-overview':[[23,4,'start'],[23,4,'start'],[23,4,'start'],[23,4,'start']],
+ 'oregon-willamette':[[24,4,'start'],[24,4,'start'],[-24,26,'end']],
+ 'oregon-south':[[-24,4,'end'],[24,4,'start'],[24,4,'start'],[-24,27,'end']],
+};
+const colors={cool:'#387d91',warm:'#b95264',plain:'#ac8432'};
 export default function OregonMap({focus}:{focus:string}){
  const uid=useId().replace(/:/g,'');
  const spec=OREGON_MAPS[focus];if(!spec)return null;
- const zoom=focus==='oregon-willamette'?[48,58,92,61]:focus==='oregon-south'?[35,168,132,137]:focus==='oregon-gorge'?[170,32,75,40]:[0,0,510,325];
- const scale=zoom[2]/510;
- const p=(n:number)=>n*scale;
- return <figure className="region-map oregon-map">
-  <svg viewBox={zoom.join(' ')} role="img" aria-labelledby={`${uid}-title ${uid}-desc`} preserveAspectRatio="xMidYMid meet">
+ // Transform geography uniformly into one stable canvas; labels stay in screen units.
+ const bounds=focus==='oregon-willamette'?[48,58,92,61]:focus==='oregon-south'?[35,168,132,137]:focus==='oregon-gorge'?[170,28,75,52]:[0,0,510,325];
+ const [bx,by,bw,bh]=bounds, scale=Math.min(520/bw,310/bh);
+ const ox=300-(bx+bw/2)*scale, oy=205-(by+bh/2)*scale;
+ const point=(lon:number,lat:number)=>{const [x,y]=project(lon,lat);return [x*scale+ox,y*scale+oy]};
+ const textStyle={fontFamily:'Arial, sans-serif',fontSize:13,fill:'#38443e'};
+ return <figure className="region-map atlas-map oregon-map">
+  <header className="atlas-heading"><span>DECANT ATLAS / OREGON</span><strong>{spec.title}</strong></header>
+  <svg className="atlas-canvas" viewBox="0 0 600 410" width="600" height="410" role="img" aria-labelledby={`${uid}-title ${uid}-desc`} preserveAspectRatio="xMidYMid meet">
    <title id={`${uid}-title`}>{spec.title}</title><desc id={`${uid}-desc`}>{spec.description}</desc>
-   <defs><clipPath id={`${uid}-land`}><path d={outlinePath}/></clipPath></defs>
-   <rect x="0" y="0" width="510" height="325" fill="#f8f6ef"/>
-   <path d="M0 0H45L38 45L52 90L48 140L37 195L24 250L14 295H0Z" fill="#e4ecf1"/>
-   <path d={outlinePath} fill="#edeee1" stroke="#9fa994" strokeWidth={p(1.5)}/>
-   <g clipPath={`url(#${uid}-land)`}>
-    <path d="M121 36Q166 100 141 160T138 304" fill="none" stroke="#d4dccb" strokeWidth="19"/>
-    <path d="M65 31Q48 89 62 160T55 285" fill="none" stroke="#dce1d4" strokeWidth="10"/>
+   <defs>
+    <clipPath id={`${uid}-frame`}><rect x="16" y="16" width="568" height="378" rx="2"/></clipPath>
+    <clipPath id={`${uid}-land`}><path d={outlinePath}/></clipPath>
+    <pattern id={`${uid}-hatch`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0V7" stroke="#9d9b84" strokeWidth="1" opacity=".3"/></pattern>
+    <linearGradient id={`${uid}-climate`}><stop stopColor="#387d91"/><stop offset=".5" stopColor="#b4b16c"/><stop offset="1" stopColor="#c66d55"/></linearGradient>
+   </defs>
+   <rect width="600" height="410" fill="#f8f3e7"/>
+   <g clipPath={`url(#${uid}-frame)`}>
+    <rect x="16" y="16" width="568" height="378" fill="#dcebee"/>
+    <g transform={`translate(${ox} ${oy}) scale(${scale})`}>
+     <path d={outlinePath} fill="#eee7d2" stroke="#7a8275" strokeWidth={1.4/scale}/>
+     <g clipPath={`url(#${uid}-land)`}>
+      <path d="M121 36Q166 100 141 160T138 304" fill="none" stroke="#ced3b6" strokeWidth="19"/>
+      <path d="M121 36Q166 100 141 160T138 304" fill="none" stroke={`url(#${uid}-hatch)`} strokeWidth="19"/>
+      <path d="M65 31Q48 89 62 160T55 285" fill="none" stroke="#d5d8bf" strokeWidth="10"/>
+      {focus==='oregon-overview'&&<>
+       <ellipse cx="102" cy="109" rx="15" ry="49" fill="#a8b889" opacity=".8"/>
+       <ellipse cx="85" cy="208" rx="19" ry="26" fill="#d8b560" opacity=".75"/>
+       <ellipse cx="113" cy="274" rx="25" ry="15" fill="#cf8790" opacity=".75"/>
+      </>}
+     </g>
+     {/* Columbia River follows the simplified northern state boundary. */}
+     <path d="M76.7 13.4L97.35 14.74L119.18 36.85L120.36 50.25L150.45 56.95L182.9 46.9L215.35 52.26L241.9 44.89L289.1 31.49L336.3 26.8" stroke="#659aab" strokeWidth={3/scale} fill="none"/>
+    </g>
+    {focus==='oregon-overview'&&<>
+     <text x="334" y="54" style={{...textStyle,fontSize:12,letterSpacing:3}}>WASHINGTON</text>
+     <text x="374" y="220" style={{...textStyle,fontFamily:'Georgia, serif',fontSize:37,fill:'#737b63'}}>Oregon</text>
+     <text x="67" y="264" transform="rotate(-90 67 264)" style={{...textStyle,fontSize:12,letterSpacing:3,fill:'#447887'}}>PACIFIC OCEAN</text>
+     <text x="305" y="294" transform="rotate(-85 305 294)" style={{...textStyle,fontSize:11,letterSpacing:2}}>CASCADES</text>
+     <text x="352" y="377" style={{...textStyle,fontSize:11,letterSpacing:2}}>CALIFORNIA / NEVADA</text>
+    </>}
+    {spec.gorge&&<>
+     <rect x="16" y="16" width="568" height="125" fill="#ece8d8"/>
+     <text x="48" y="65" style={{...textStyle,fontSize:14,letterSpacing:3}}>WASHINGTON</text>
+     <text x="48" y="327" style={{...textStyle,fontSize:14,letterSpacing:3}}>OREGON</text>
+     <text x="300" y="124" textAnchor="middle" style={{...textStyle,fontFamily:'Georgia, serif',fontStyle:'italic',fontSize:18,fill:'#39788c'}}>Columbia River</text>
+     <rect x="65" y="349" width="470" height="7" rx="3" fill={`url(#${uid}-climate)`}/>
+     <text x="65" y="380" style={{...textStyle,fontSize:13}}>WEST · cooler / wetter</text>
+     <text x="535" y="380" textAnchor="end" style={{...textStyle,fontSize:13}}>EAST · drier</text>
+    </>}
+    {spec.wind&&<g>
+     <path d="M65 338Q110 310 160 310M148 302L160 310L148 318" stroke="#387d91" strokeWidth="3" fill="none"/>
+     <text x="48" y="365" style={{...textStyle,fontSize:13,fill:'#387d91'}}>Marine air →</text>
+    </g>}
+    {spec.places.map((place,i)=>{const [x,y]=point(place.lon,place.lat);return <g key={place.name}>
+     <circle cx={x} cy={y} r="21" fill={colors[place.tone]} opacity=".15"/>
+     <circle cx={x} cy={y} r="12" fill={colors[place.tone]} stroke="#fffdf8" strokeWidth="2"/>
+     <text x={x} y={y+4} textAnchor="middle" style={{fontSize:12,fill:'#fff',fontFamily:'Arial, sans-serif',fontWeight:700}}>{i+1}</text>
+     {!spec.gorge&&(()=>{const [dx,dy,anchor]=labelLayouts[focus][i];return <text x={x+dx} y={y+dy} textAnchor={anchor} style={{...textStyle,fontSize:16,fontWeight:600,paintOrder:'stroke',stroke:'#f8f3e7',strokeWidth:3,strokeLinejoin:'round'}}>{place.name}</text>})()}
+     {spec.gorge&&<><path d={`M${x} ${y+16}V${y+43}`} stroke={colors[place.tone]} strokeWidth="1.5"/><text x={x} y={y+65} textAnchor="middle" style={{...textStyle,fontSize:20,fontFamily:'Georgia, serif'}}>{i===0?'Hood River':'The Dalles'}</text></>}
+    </g>})}
    </g>
-   {focus==='oregon-overview'&&<g fill="#68745e" fontSize="13" fontFamily="system-ui, sans-serif"><text x="200" y="22">WASHINGTON</text><text x="250" y="310">CALIFORNIA / NEVADA</text><text x="320" y="163" fontSize="25" fontFamily="Georgia, serif">Oregon</text><text x="20" y="180" transform="rotate(-90 20 180)">PACIFIC OCEAN</text><text x="155" y="235" transform="rotate(-85 155 235)">CASCADES</text><text x="49" y="150" transform="rotate(-90 49 150)">COAST RANGE</text></g>}
-   {spec.wind&&<g stroke="#4a6b86" fill="none" strokeWidth={p(2.5)}><path d="M49 94L80 94"/><path d="M77 92L80 94L77 96"/></g>}
-   {spec.gorge&&<g fontFamily="system-ui, sans-serif" fill="#68745e" fontSize={p(17)}><text x="185" y="37">WASHINGTON</text><text x="185" y="70">OREGON</text><path d="M185 65L220 65" fill="none" stroke="#8c4652" strokeWidth={p(2)}/><text x="185" y="62" fontSize={p(14)}>WEST · cooler</text><text x="220" y="62" textAnchor="end" fontSize={p(14)}>EAST · drier</text></g>}
-   {spec.places.map((place,i)=>{const [x,y]=project(place.lon,place.lat);return <g key={place.name}><circle cx={x} cy={y} r={p(10)} fill={colors[place.tone]} stroke="#fffdf8" strokeWidth={p(2)}/><text x={x} y={y+p(4)} textAnchor="middle" fill="white" style={{fontSize:p(12),fontFamily:'system-ui, sans-serif',fontWeight:600}}>{i+1}</text></g>})}
+   <rect x="16" y="16" width="568" height="378" fill="none" stroke="#c8c5b2"/>
+   <g transform="translate(552 46)"><path d="M0 18V-5M-5 2L0-5L5 2" stroke="#465449" fill="none" strokeWidth="1.5"/><text x="0" y="-12" textAnchor="middle" style={{...textStyle,fontSize:11}}>N</text></g>
   </svg>
   <ol className="oregon-map-key">{spec.places.map((place,i)=><li key={place.name}><span style={{background:colors[place.tone]}} aria-hidden="true">{i+1}</span><div><strong>{place.name}</strong><small>{place.note}</small></div></li>)}</ol>
-  <figcaption>{spec.title}. Approximate reference locations, not AVA boundaries. Shaded bands indicate mountain ranges schematically.</figcaption>
+  <figcaption>Reference locations and illustrative growing areas, not AVA boundaries. Mountain bands and river simplified for orientation.</figcaption>
  </figure>;
 }
