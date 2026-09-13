@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useId} from 'react';
 import OregonMap from './oregon-map';
 // One projected outline of California, reused at different zooms. Points are real coordinates
 // run through an equirectangular projection, so the shape and the relative positions are honest.
@@ -38,26 +38,28 @@ const SPECS:Record<string,MapSpec>={
    {x:85.1,y:196.0,label:'Sta. Rita Hills',note:'cold',tone:'cool',anchor:'end',dy:2},
    {x:96.4,y:197.1,label:'Happy Canyon',note:'warm · Cabernet',tone:'warm',anchor:'start',dy:6}]}
 };
-const TONE={cool:'#4a6b86',warm:'#8c4652',plain:'#4f6b45'};
+const TONE={cool:'#387d91',warm:'#b95264',plain:'#a17d2e'};
 export function RegionMap({focus}:{focus:string}){
+ const uid=useId().replace(/:/g,'');
  if(focus.startsWith('oregon-'))return <OregonMap focus={focus}/>;
  const spec=SPECS[focus];
  if(!spec)return null;
- const id='ca-'+focus;
+ const id='ca-'+focus+'-'+uid;
  // Text and markers are sized in user units, so a zoomed viewBox would magnify them. Scale them back.
  const k=Number(spec.view.split(/\s+/)[2])/218;
  const px=(n:number)=>Math.round(n*k*100)/100;
- return <figure className="region-map">
-  <svg viewBox={spec.view} style={{["--ms" as any]:k}} role="img" aria-labelledby={id+'-t '+id+'-d'} preserveAspectRatio="xMidYMid meet">
+ return <figure className="region-map atlas-map california-map">
+  <header className="atlas-heading"><span>DECANT ATLAS / CALIFORNIA</span><strong>{spec.title}</strong></header>
+  <svg className="atlas-canvas" viewBox={spec.view} style={{["--ms" as any]:k}} role="img" aria-labelledby={id+'-t '+id+'-d'} preserveAspectRatio="xMidYMid meet">
    <title id={id+'-t'}>{spec.title}</title><desc id={id+'-d'}>{spec.desc}</desc>
    <defs><clipPath id={id+'-clip'}><path d={CA}/></clipPath></defs>
-   <path d={OCEAN} fill="#e4ecf1"/>
-   <path d={CA} fill="#efeee3" stroke="#c8c9ba" strokeWidth={px(1.1)}/>
-   {spec.zones&&<g clipPath={`url(#${id}-clip)`} opacity="0.55">
-    <rect x="0" y="58" width="62" height="58" fill="#9db08a"/>
-    <rect x="40" y="132" width="66" height="80" fill="#b6a07e"/>
-    <rect x="120" y="208" width="95" height="50" fill="#c49a9a"/>
-    <path d="M62 88 L86 82 L116 168 L96 174 Z" fill="#d9cfa4"/>
+   <path d={OCEAN} fill="#dcebee"/>
+   <path d={CA} fill="#eee7d2" stroke="#929780" strokeWidth={px(1.1)}/>
+   {spec.zones&&<g clipPath={`url(#${id}-clip)`} opacity="0.85">
+    <rect x="0" y="58" width="62" height="58" fill="#9eaf77"/>
+    <rect x="40" y="132" width="66" height="80" fill="#dfb25c"/>
+    <rect x="120" y="208" width="95" height="50" fill="#cd8591"/>
+    <path d="M62 88 L86 82 L116 168 L96 174 Z" fill="#b8be75"/>
    </g>}
    {spec.zones&&<g className="zone-label">
     <text x="8" y="78">NORTH COAST</text><text x="44" y="168">CENTRAL COAST</text>
@@ -74,14 +76,15 @@ export function RegionMap({focus}:{focus:string}){
     <text x="-46" y="160">Cold current,</text><text x="-46" y="169">running south</text>
    </g>}
    {spec.markers.map((m,i)=><g key={i} className="map-marker">
+    <circle cx={m.x} cy={m.y} r={px(4.5)} fill={TONE[m.tone||'plain']} opacity=".15"/>
     <circle cx={m.x} cy={m.y} r={px(2.4)} fill={TONE[m.tone||'plain']}/>
     <text x={m.anchor==='end'?m.x-px(4):m.x+px(4)} y={m.y+px(2.6+(m.dy||0))} textAnchor={m.anchor==='end'?'end':'start'}>{m.label}</text>
     {m.note&&<text className="map-note" x={m.anchor==='end'?m.x-px(4):m.x+px(4)} y={m.y+px(9.4+(m.dy||0))} textAnchor={m.anchor==='end'?'end':'start'}>{m.note}</text>}
    </g>)}
    {spec.strip==='napa'&&<g className="napa-strip" transform="translate(198 58)">
     <text x="0" y="-10" className="strip-title">The valley, north to south</text>
-    <rect x="0" y="0" width="46" height="150" rx="6" fill="url(#napa-grad)"/>
-    <defs><linearGradient id="napa-grad" x1="0" y1="0" x2="0" y2="1">
+    <rect x="0" y="0" width="46" height="150" rx="6" fill={`url(#${id}-grad)`}/>
+    <defs><linearGradient id={`${id}-grad`} x1="0" y1="0" x2="0" y2="1">
      <stop offset="0" stopColor="#b8615c"/><stop offset="0.55" stopColor="#c99a72"/><stop offset="1" stopColor="#7f9f9d"/>
     </linearGradient></defs>
     <text x="54" y="14">Calistoga</text><text className="map-note" x="54" y="23">hottest</text>
@@ -90,6 +93,7 @@ export function RegionMap({focus}:{focus:string}){
     <text x="54" y="146">Carneros</text><text className="map-note" x="54" y="155">coolest, by the bay</text>
    </g>}
   </svg>
+  <div className="atlas-legend"><span><i style={{background:TONE.cool}}/>Marine influence</span><span><i style={{background:TONE.warm}}/>Warmer inland</span><span><i style={{background:TONE.plain}}/>Reference location</span></div>
   <figcaption>{spec.title}. Simplified, for orientation rather than navigation.</figcaption>
  </figure>;
 }

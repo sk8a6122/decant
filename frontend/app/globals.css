@@ -238,9 +238,25 @@ footer { border-color: #d9b9c1; color: #86465a; }
 .social-panel{margin:1rem 0}.social-panel hr{margin:1.5rem 0}.social-person{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;border-bottom:1px solid #ddd}.social-entries{max-height:24rem;overflow:auto}.social-person input[type=checkbox]{width:1.1rem;height:1.1rem;margin-right:.5rem}.shared-profile{max-width:1200px;margin:auto;padding:2rem}.shared-profile h1{margin-top:2rem}.shared-note{white-space:pre-wrap;overflow-wrap:anywhere}
 
 /* Oregon lesson maps: numbered places keep labels legible on narrow screens. */
-.oregon-map svg{width:100%;height:auto;max-height:380px;display:block}
+.oregon-map svg{width:100%;height:auto;display:block}
 .oregon-map-key{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;list-style:none!important;margin:18px 0!important;padding:0!important}
 .oregon-map-key li{display:flex;align-items:flex-start;gap:10px;font:14px/1.45 Arial,sans-serif}
 .oregon-map-key li>span{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;color:#fff;font-size:12px}
 .oregon-map-key strong{display:block;color:#34412e;font-weight:600}.oregon-map-key small{display:block;color:#66705e;margin-top:3px;font-size:12px}
 @media(max-width:600px){.oregon-map-key{grid-template-columns:1fr}}
+
+/* Regional atlas: map canvases size independently from interface icons. */
+.region-map.atlas-map{padding:0;background:#f8f3e7;border:1px solid #c9c1a9;border-radius:3px;overflow:hidden;box-shadow:0 4px 18px #4b402008}
+.atlas-heading{padding:22px 24px 17px;border-bottom:1px solid #d8d0ba}
+.atlas-heading>span{display:block;font:10px/1.5 Arial,sans-serif;letter-spacing:2.4px;color:#874456;margin-bottom:8px}
+.atlas-heading>strong{display:block;font:26px/1.2 Georgia,serif;color:#354438;font-weight:400}
+.region-map.atlas-map>svg.atlas-canvas{display:block;width:100%;max-width:none;height:auto;max-height:none;margin:0;flex:none}
+.region-map.oregon-map>svg.atlas-canvas{aspect-ratio:600/410}
+.region-map.california-map>svg.atlas-canvas{max-width:580px;margin:18px auto}
+.atlas-map .map-marker>text,.atlas-map .zone-label>text{paint-order:stroke;stroke:#f8f3e7;stroke-width:calc(1.4px * var(--ms));stroke-linejoin:round;font-weight:600}
+.atlas-map .map-marker>.map-note{font-weight:400;fill:#49584c}
+.atlas-legend{display:flex;gap:12px 20px;flex-wrap:wrap;padding:15px 24px;border-top:1px solid #d8d0ba;font:11px/1.5 Arial,sans-serif;color:#526151}
+.atlas-legend span{display:flex;align-items:center;gap:7px}.atlas-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.atlas-map .oregon-map-key{padding:18px 24px!important;margin:0!important;border-top:1px solid #d8d0ba}
+.region-map.atlas-map figcaption{padding:0 24px 17px;margin:0;text-align:left;color:#707364;font-size:11px}
+@media(max-width:600px){.atlas-heading{padding:17px 16px 13px}.atlas-heading>strong{font-size:22px}.atlas-map .oregon-map-key{padding:16px!important}.atlas-legend{padding:14px 16px}.region-map.atlas-map figcaption{padding:0 16px 16px}}
