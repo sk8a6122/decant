@@ -245,6 +245,10 @@ footer { border-color: #d9b9c1; color: #86465a; }
 .oregon-map-key strong{display:block;color:#34412e;font-weight:600}.oregon-map-key small{display:block;color:#66705e;margin-top:3px;font-size:12px}
 @media(max-width:600px){.oregon-map-key{grid-template-columns:1fr}}
 
+/* New York atlas: original flat editorial cartography with legible keyed regions. */
+.new-york-map svg{width:100%;height:auto;display:block}.new-york-map .atlas-number{fill:#fff;font:700 12px Arial,sans-serif}.new-york-map .atlas-water-label{fill:#24677a;font:700 10px Arial,sans-serif;letter-spacing:2px}.new-york-map .atlas-compass{fill:#354438;font:700 11px Arial,sans-serif}.new-york-map .atlas-place-label{fill:#354438;font:600 17px Georgia,serif}.new-york-map .atlas-place-note{fill:#5e695d;font:12px Arial,sans-serif}.new-york-map .atlas-region-label{fill:#fffaf0;font:700 12px Arial,sans-serif;letter-spacing:1.5px;paint-order:stroke;stroke:#53665955;stroke-width:2px}.atlas-map-key{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;list-style:none!important;margin:0!important;padding:18px 24px!important;border-top:1px solid #d8d0ba}.atlas-map-key li{display:flex;align-items:flex-start;gap:10px;font:14px/1.45 Arial,sans-serif}.atlas-map-key li>span{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;color:#fff;font-size:12px}.atlas-map-key strong{display:block;color:#34412e;font-weight:600}.atlas-map-key small{display:block;color:#66705e;margin-top:3px;font-size:12px}
+@media(max-width:600px){.atlas-map-key{grid-template-columns:1fr;padding:16px!important}.new-york-map .atlas-place-note{font-size:13px}}
+
 /* Regional atlas: map canvases size independently from interface icons. */
 .region-map.atlas-map{padding:0;background:#f8f3e7;border:1px solid #c9c1a9;border-radius:3px;overflow:hidden;box-shadow:0 4px 18px #4b402008}
 .atlas-heading{padding:22px 24px 17px;border-bottom:1px solid #d8d0ba}
@@ -252,6 +256,7 @@ footer { border-color: #d9b9c1; color: #86465a; }
 .atlas-heading>strong{display:block;font:26px/1.2 Georgia,serif;color:#354438;font-weight:400}
 .region-map.atlas-map>svg.atlas-canvas{display:block;width:100%;max-width:none;height:auto;max-height:none;margin:0;flex:none}
 .region-map.oregon-map>svg.atlas-canvas{aspect-ratio:600/410}
+.region-map.new-york-map>svg.atlas-canvas{aspect-ratio:600/410}
 .region-map.california-map>svg.atlas-canvas{max-width:580px;margin:18px auto}
 .atlas-map .map-marker>text,.atlas-map .zone-label>text{paint-order:stroke;stroke:#f8f3e7;stroke-width:calc(1.4px * var(--ms));stroke-linejoin:round;font-weight:600}
 .atlas-map .map-marker>.map-note{font-weight:400;fill:#49584c}

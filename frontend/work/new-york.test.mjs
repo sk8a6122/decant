@@ -28,4 +28,5 @@ assert.equal(after.progress.filter(p=>p.content_id==='new-york').length,6);
 assert.equal(after.progress.filter(p=>p.content_id==='oregon').length,1);
 assert.ok(course.regions.includes('Finger Lakes')&&course.regions.includes('Long Island')&&course.regions.includes('Lake Erie'));
 assert.ok(course.grapes.includes('Riesling')&&course.grapes.includes('Concord'));
+assert.deepEqual(course.body.map(lesson=>lesson.map||null),['new-york-overview','new-york-finger-lakes','new-york-long-island','new-york-other-regions','new-york-other-regions',null]);
 console.log('PASS: New York reaches existing notebooks, preserves edits/progress, rejects incorrect answers, and saves six completions without duplicates.');
