@@ -12,3 +12,4 @@ import './wine-pairings.test.mjs';
 
 import "./oregon.test.mjs";
 import "./new-york.test.mjs";
+import "./south-africa.test.mjs";

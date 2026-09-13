@@ -1,0 +1,33 @@
+import fs from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url);
+const {rolldown}=await import(pathToFileURL(require.resolve('rolldown',{paths:[require.resolve('vite')]})).href);
+const bundle=await rolldown({input:'work/portable-api.ts',platform:'node'});
+const output=await bundle.generate({format:'esm'});
+await fs.mkdir('work/test-build',{recursive:true});await fs.writeFile('work/test-build/south-africa-portable.mjs',output.output[0].code);
+const {freshNotebook,createNotebookRequest}=await import('./test-build/south-africa-portable.mjs');
+globalThis.location={search:''};
+let saved=freshNotebook();saved.content=saved.content.filter(c=>c.id!=='south-africa');
+saved.content.find(c=>c.id==='new-york').title='My edited New York course';
+saved.academy.legacyProgress=[{content_id:'new-york',lesson:0}];
+const req=createNotebookRequest({read:async()=>structuredClone(saved),write:async s=>{saved=structuredClone(s)},member:()=>({id:'south-africa-test',status:'account'})});
+const boot=await req('bootstrap'),course=boot.content.find(c=>c.id==='south-africa');
+assert.equal(course.body.length,6);assert.equal(course.locked,false);
+assert.equal(boot.content.find(c=>c.id==='new-york').title,'My edited New York course');
+for(let lesson=0;lesson<course.body.length;lesson++){
+ const content=course.body[lesson];assert.equal(content.options.length,3);
+ await assert.rejects(req('progress',{contentId:'south-africa',lesson,answer:(content.answer+1)%3}),/Not quite/);
+ await req('progress',{contentId:'south-africa',lesson,answer:content.answer});
+ await req('progress',{contentId:'south-africa',lesson,answer:content.answer});
+}
+const after=await req('bootstrap');
+assert.equal(after.content.filter(c=>c.id==='south-africa').length,1);
+assert.equal(after.progress.filter(p=>p.content_id==='south-africa').length,6);
+assert.equal(after.progress.filter(p=>p.content_id==='new-york').length,1);
+assert.ok(course.regions.includes('Stellenbosch')&&course.regions.includes('Swartland')&&course.regions.includes('Walker Bay'));
+assert.ok(course.grapes.includes('Chenin Blanc')&&course.grapes.includes('Pinotage'));
+assert.deepEqual(course.body.map(lesson=>lesson.map||null),['south-africa-overview','south-africa-cape-core','south-africa-swartland','south-africa-south-coast','south-africa-inland',null]);
+assert.match(course.body[5].body,/100 percent/);assert.match(course.body[5].body,/85 percent/);
+console.log('PASS: South Africa reaches existing notebooks, preserves edits/progress, rejects incorrect answers, and saves six completions without duplicates.');

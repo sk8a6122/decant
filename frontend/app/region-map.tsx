@@ -2,6 +2,7 @@
 import React, {useId} from 'react';
 import OregonMap from './oregon-map';
 import NewYorkMap from './new-york-map';
+import SouthAfricaMap from './south-africa-map';
 // One projected outline of California, reused at different zooms. Points are real coordinates
 // run through an equirectangular projection, so the shape and the relative positions are honest.
 // Everything drawn on top is a simplified marker, not a survey boundary.
@@ -44,6 +45,7 @@ export function RegionMap({focus}:{focus:string}){
  const uid=useId().replace(/:/g,'');
  if(focus.startsWith('oregon-'))return <OregonMap focus={focus}/>;
  if(focus.startsWith('new-york-'))return <NewYorkMap focus={focus}/>;
+ if(focus.startsWith('south-africa-'))return <SouthAfricaMap focus={focus}/>;
  const spec=SPECS[focus];
  if(!spec)return null;
  const id='ca-'+focus+'-'+uid;
