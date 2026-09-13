@@ -11,3 +11,4 @@ import './food-pairings.test.mjs';
 import './wine-pairings.test.mjs';
 
 import "./oregon.test.mjs";
+import "./new-york.test.mjs";

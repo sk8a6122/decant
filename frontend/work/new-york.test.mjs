@@ -1,0 +1,31 @@
+import fs from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url);
+const {rolldown}=await import(pathToFileURL(require.resolve('rolldown',{paths:[require.resolve('vite')]})).href);
+const bundle=await rolldown({input:'work/portable-api.ts',platform:'node'});
+const output=await bundle.generate({format:'esm'});
+await fs.mkdir('work/test-build',{recursive:true});await fs.writeFile('work/test-build/new-york-portable.mjs',output.output[0].code);
+const {freshNotebook,createNotebookRequest}=await import('./test-build/new-york-portable.mjs');
+globalThis.location={search:''};
+let saved=freshNotebook();saved.content=saved.content.filter(c=>c.id!=='new-york');
+saved.content.find(c=>c.id==='oregon').title='My edited Oregon course';
+saved.academy.legacyProgress=[{content_id:'oregon',lesson:0}];
+const req=createNotebookRequest({read:async()=>structuredClone(saved),write:async s=>{saved=structuredClone(s)},member:()=>({id:'new-york-test',status:'account'})});
+const boot=await req('bootstrap'),course=boot.content.find(c=>c.id==='new-york');
+assert.equal(course.body.length,6);assert.equal(course.locked,false);
+assert.equal(boot.content.find(c=>c.id==='oregon').title,'My edited Oregon course');
+for(let lesson=0;lesson<course.body.length;lesson++){
+ const content=course.body[lesson];assert.equal(content.options.length,3);
+ await assert.rejects(req('progress',{contentId:'new-york',lesson,answer:(content.answer+1)%3}),/Not quite/);
+ await req('progress',{contentId:'new-york',lesson,answer:content.answer});
+ await req('progress',{contentId:'new-york',lesson,answer:content.answer});
+}
+const after=await req('bootstrap');
+assert.equal(after.content.filter(c=>c.id==='new-york').length,1);
+assert.equal(after.progress.filter(p=>p.content_id==='new-york').length,6);
+assert.equal(after.progress.filter(p=>p.content_id==='oregon').length,1);
+assert.ok(course.regions.includes('Finger Lakes')&&course.regions.includes('Long Island')&&course.regions.includes('Lake Erie'));
+assert.ok(course.grapes.includes('Riesling')&&course.grapes.includes('Concord'));
+console.log('PASS: New York reaches existing notebooks, preserves edits/progress, rejects incorrect answers, and saves six completions without duplicates.');
