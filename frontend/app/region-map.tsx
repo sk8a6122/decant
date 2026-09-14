@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import {LabelReading} from './label-reading';
 // The existing reader slot now presents grape guides; map data in older notebooks is ignored.
 type Props={courseId?:string;lessonIndex?:number;focus?:string};
 type Guide={name:string;sources:string[][];rows:[string,string,number[]][]};
@@ -424,5 +425,10 @@ function renderRegionalGrapes(h:typeof React.createElement,props:Props){
  ...course.sources.map(source=>h('a',{key:source[1],href:source[1],target:'_blank',rel:'noopener noreferrer',style:{display:'block',marginTop:8,textDecoration:'underline'}},source[0]))));
 
 }
-export function RegionMap(props:Props){return renderRegionalGrapes(React.createElement,props);}
+export function RegionMap(props:Props){
+ if(props.lessonIndex===5&&props.courseId&&REGION_GRAPES[props.courseId])return React.createElement(React.Fragment,null,
+ React.createElement(LabelReading,{courseId:props.courseId,key:props.courseId}),
+ React.createElement('details',null,React.createElement('summary',{style:{cursor:'pointer',marginBottom:16}},'Review regional grape varieties'),renderRegionalGrapes(React.createElement,props)));
+ return renderRegionalGrapes(React.createElement,props);
+}
 export default RegionMap;
